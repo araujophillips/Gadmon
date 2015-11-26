@@ -1,0 +1,55 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1 class="page-header">Direcciones  de envio</h1>
+	
+	<%= link_to '<button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>'.html_safe, new_customer_shipping_address_path(@customer) %>
+
+	<br><br> <!-- line break -->
+
+  <% if !@customer.shipping_addresses.empty? %>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th>Ciudad</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @customer.shipping_addresses.each do |shipping_address| %>
+          <tr>
+            <td><%= shipping_address.id %></td>
+            <td><%= link_to shipping_address.address, customer_shipping_address_path(@customer, shipping_address) %></td>
+            <td><%= shipping_address.state %></td>
+            <td><%= shipping_address.city %></td>
+            <td><%= shipping_address.office == true ? 'Oficina' : 'Residencia' %></td>
+
+            <td class="text-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                  <i class="fa fa-gear"></i> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><%= link_to 'Ver detalle', customer_shipping_address_path(@customer, shipping_address) %></li>
+                  <li><%= link_to 'Editar', edit_customer_shipping_address_path(@customer, shipping_address) %></li>
+                  <li><%= link_to 'Eliminar', [@customer, shipping_address], method: :delete, data: { confirm: '¿Seguro que deseas eliminar la dirección "' + shipping_address.address + '"?' } %></li>
+                </ul>
+              </div>
+            </td>
+            
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  <% else %>
+
+    <div class="alert alert-warning g-margin-b-0" role="alert">Este cliente aun no tiene direcciones...</div>
+
+  <% end %>
+
+  <br><br> <!-- line break -->
+</div>

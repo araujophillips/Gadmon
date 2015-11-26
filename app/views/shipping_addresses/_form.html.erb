@@ -1,0 +1,134 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+  <%= form_for([@customer, @shipping_address]) do |f| %>
+
+    <% if @shipping_address.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@shipping_address.errors.count, "error") %> prohibited this shipping_address from being saved:</h2>
+
+        <ul>
+        <% @shipping_address.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <h1 class="page-header"><%= name %><%= @customer.name %></h1>
+
+    <div class="row">
+      <div class="col-lg-6">
+
+          <%= f.label "Dirección" %>
+          <%= f.text_field :address, class: "form-control", value: @shipping_address.address, :required => true, :readonly => readonly  %>
+
+      </div>
+      <div class="col-lg-6">
+
+          <%= f.label "Estado" %>
+          <%= f.text_field :state, class: "form-control", value: @shipping_address.state, :required => true , :readonly => readonly %>
+
+      </div>
+    </div>
+    <br> <!-- line break -->
+    <div class="row">
+      <div class="col-lg-6">
+
+          <%= f.label "Ciudad" %>
+          <%= f.text_field :city, class: "form-control", value: @shipping_address.city, :required => true, :readonly => readonly %>
+
+      </div>
+      <div class="col-lg-6">
+
+          <%= f.label "Municipio" %>
+          <%= f.text_field :municipality, class: "form-control", value: @shipping_address.municipality, :required => false, :readonly => readonly, :placeholder => placeholder %>
+
+      </div>
+    </div>
+    <br> <!-- line break -->
+    <div class="row">
+      <div class="col-lg-6">
+
+          <%= f.label "Compañia de encomiendas" %>
+          <%= f.text_field :company, class: "form-control", value: @shipping_address.company, :required => false, readonly: company  %>
+
+      </div>
+      <div class="col-lg-2">
+          <label class="col-padding"></label>
+
+          <%= button_tag(type: 'button', :id=> "btn-office", class: "btn #{'btn-success' if @shipping_address.office == true} #{'btn-warning' if @shipping_address.office != true}", disabled: disabled,) do %>
+              <%= @shipping_address.office == true ? '<i class="fa fa-check"></i> Oficina'.html_safe : '<i class="fa fa-home"></i> Residencia'.html_safe %>
+          <% end %>
+
+          <%= f.text_field :office, id: 'check-office', class: 'g-display-none', value: @shipping_address.office %>
+
+      </div><!-- /.col-lg-2 -->
+      <div class="col-lg-4"></div><!-- /.col-lg-4 -->
+    </div>
+    <br> <!-- line break -->
+    <div class="row">
+        <div class="col-lg-6">
+
+            <%= f.label "Comentario" %><br>
+            <%= f.text_area :comment, class: "form-control", value: @shipping_address.comment, :required => false, :readonly => readonly, :placeholder => placeholder  %>
+
+        </div>
+        <div class="col-lg-6"></div><!-- /.col-lg-6 -->
+    </div>
+    <br> <!-- line break -->
+ 
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="actions">
+
+                <% if action == "show" %>
+                    <%= link_to '<button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Editar</button>'.html_safe, edit_customer_shipping_address_path(@customer, @shipping_address) %>
+                <% else  %>
+                    <% if action == "edit"  %>
+                        <%= link_to '<button type="button" class="btn btn-warning"><i class="fa fa-reply"></i> Volver</button>'.html_safe, customer_path(@customer) %>
+                        &nbsp;
+                     <% end %>
+                    <%= button_tag(type: 'submit', class: "btn btn-success") do %>
+                        <i class="fa fa-floppy-o"></i> Guardar
+                    <% end %>
+                <% end %>
+
+            </div>
+        </div>
+    </div>
+
+  <% end %>
+
+</div>
+
+<% if action == "edit" || action == "new"  %>
+
+  <script>
+
+    $('#btn-office').click(function() {
+
+      var btn = $('#btn-office');
+      var check = $('#check-office');
+      var company = $('#shipping_address_company');
+
+      if( btn.hasClass( 'btn-warning' ) ){
+        btn.removeClass( 'btn-warning' );
+        btn.addClass( 'btn-success' );
+        btn.html('<i class="fa fa-truck"></i> Oficina');
+        check.val(true);
+        company.attr('readonly', false);
+      }
+      else if( btn.hasClass( 'btn-success' ) ){
+        btn.removeClass( 'btn-success' );
+        btn.addClass( 'btn-warning' );      
+        btn.html('<i class="fa fa-home"></i> Residencia');
+        check.val(false);
+        company.attr('readonly', true);
+        company.val('');
+      }
+
+    });
+
+  </script>
+
+<% end %>

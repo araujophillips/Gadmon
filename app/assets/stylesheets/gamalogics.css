@@ -1,0 +1,32 @@
+.g-display-none{
+	display: none;
+}
+
+.g-margin-t-0{ margin-top: 0px; }
+.g-margin-b-0{ margin-bottom: 0px; }
+.g-margin-l-0{ margin-left: 0px; }
+.g-margin-r-0{ margin-right: 0px; }
+
+.col-padding {
+	width: 100%;
+	min-height: 15px;
+	visibility: hidden;
+}
+
+/* Font colours */
+.g-success { color: green;}
+.g-danger { color: red; }
+
+/* Border radius */
+
+.radius-top{
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 4px 4px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
+}
+
+.radius-bottom{
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px 0px 4px 4px;
+	border-radius: 0px 0px 4px 4px;
+}

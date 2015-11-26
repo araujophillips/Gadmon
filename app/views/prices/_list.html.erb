@@ -1,0 +1,44 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <h1 class="page-header">Historial de precios</h1>
+	
+	<%= link_to '<button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>'.html_safe, new_product_price_path(@product) %>
+
+	<br><br>
+
+	<% if !@product.prices.empty? %>
+
+		<div class="row">
+			<div class="col-lg-12">
+			  <table class="table table-hover">
+			    <thead>
+			      <tr>
+			      	<th class="col-lg-1"></th>
+			        <th class="col-lg-2">Precio</th>
+			        <th class="col-lg-3 text-center">Fecha</th>
+			        <th class="col-lg-5 text-center">Comentario</th>
+			        <th class="col-lg-1"></th>
+			      </tr>
+			    </thead>
+
+			    <tbody>
+			      <% @product.prices.each do |price| %>
+			        <tr>
+			        	<th class="col-lg-1"></th>
+			          <td class="col-lg-1"><%= number_to_currency(price.price, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+			          <td class="col-lg-3 text-center" class="text-center"><%= price.created_at.strftime("%d-%m-%Y - %I:%m %p") %></td>
+			          <td class="col-lg-5 text-center"><%= price.comment.present? ? price.comment : '-' %></td>
+			          <th class="col-lg-1"></th>
+			        </tr>
+			      <% end %>
+			    </tbody>
+			  </table>
+			</div>
+		</div>
+
+	<% else %>
+
+		<div class="alert alert-danger g-margin-b-0" role="alert">Este producto aun no tiene precio...</div>
+
+	<% end %>
+
+</div>

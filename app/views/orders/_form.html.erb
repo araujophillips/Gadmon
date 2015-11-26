@@ -1,0 +1,95 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    <%= bootstrap_flash %>
+
+    <%= form_for(@order) do |f| %>
+
+        <% if @order.errors.any? %>
+
+            <div id="error_explanation" class="alert alert-danger">
+                <label><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</label>
+                <ul>
+                    <% @order.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+
+        <% end %>
+
+        <h1 class="page-header"><%= name %><%= @order.id %></h1>
+        <div class="row">
+            <div class="col-lg-6">
+
+                <%= f.label "Cliente" %>
+                <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
+                <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name"), :include_blank => 'Seleccionar cliente', :class => 'form-control radius-bottom' %>
+
+            </div>
+            <div class="col-lg-6"></div><!-- /.col-lg-6 -->
+        </div>
+        <br> <!-- line break -->
+        <h1 class="page-header"><small>Productos</small></h1>
+        <div id="form-add-product" class="row">
+            <div class="col-lg-6">
+
+                <%= f.label "Producto" %>
+                <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
+                <%= select_tag "order_detail[product_id]", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
+
+            </div>
+            <div class="col-lg-2">
+
+                <%= f.label "Cantidad" %>
+                <%= select_tag "order_detail[quantity]", options_from_collection_for_select(@products, "id", "name"), :include_blank => '0', :class => 'form-control radius-bottom', disabled: true %>
+
+            </div>
+
+
+            <div class="col-lg-4"></div><!-- /.col-lg-4-->
+        </div>
+        <br> <!-- line break -->
+        <div class="row">
+            <div class="col-lg-4">
+
+                <%= button_tag(type: 'button', id: 'btn-add-product', class: "btn btn-success") do %>
+                    <i class="fa fa-plus"></i> Agregar
+                <% end %>
+
+            </div>
+            <div class="col-lg-8"></div><!-- /.col-lg-8 -->
+        </div>
+        <br> <!-- line break -->
+
+        <div class="row">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Precio Unitario</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-center">Descuento</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @customers.each do |customer| %>
+                <tr>
+                  <td>1</td>
+                  <td>Nintendo Wii Blanco + 2 Pares De Controles + Juegos Original 12</td>
+                  <td>Bs 59.000.000</td>
+                  <td class="text-center">2</td>
+                  <td class="text-center">0%</td>
+                  <td>Bs. 118.000</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+
+    <% end %>
+
+</div>

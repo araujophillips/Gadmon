@@ -1,0 +1,106 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+    <%= bootstrap_flash %>
+
+    <%= form_for(@product) do |f| %>
+
+        <% if @product.errors.any? %>
+
+            <div id="error_explanation" class="alert alert-danger">
+                <label><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</label>
+                <ul>
+                    <% @product.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+
+        <% end %>
+
+        <h1 class="page-header"><%= name %><%= @product.id %></h1>
+        <div class="row">
+            <div class="col-lg-6">
+
+                <%= f.label "Nombre" %>
+                <%= f.text_field :name, class: "form-control", value: @product.name, :required => true, readonly: readonly  %>
+
+            </div>
+
+            <% if action == 'new' %>
+
+              <div class="col-lg-4">
+
+                <%= f.fields_for :prices do |price| %> 
+                  <%= price.label "Precio" %>
+                  <%= price.text_field :price, class: "form-control", :required => true, readonly: readonly  %>
+                  <%= price.text_field :comment, class: "g-display-none", value: 'Precio inicial', :required => true, readonly: readonly  %>
+                <% end %>
+
+              </div>
+
+            <% end %>
+
+            <div class="col-lg-2">
+                <label class="col-padding"></label>
+
+                <%= button_tag(type: 'button', :id=> "btn-published", class: "btn #{'btn-success' if @product.published == true} #{'btn-danger' if @product.published != true}", disabled: disabled,) do %>
+                    <%= @product.published == true ? '<i class="fa fa-check"></i> Publicado'.html_safe : '<i class="fa fa-times"></i> No publicado'.html_safe %>
+                <% end %>
+
+                <%= f.text_field :published, id: 'check-published', class: 'g-display-none', value: @product.published %>
+
+            </div><!-- /.col-lg-2 -->
+
+        </div>
+        <br> <!-- line break -->
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="actions">
+
+                    <% if action == "show" %>
+                        <%= link_to '<button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Editar</button>'.html_safe, edit_product_path(@product) %>
+                    <% else  %>
+                        <% if action == "edit"  %>
+                            <%= link_to '<button type="button" class="btn btn-warning"><i class="fa fa-reply"></i> Volver</button>'.html_safe, product_path(@product) %>
+                            &nbsp;
+                         <% end %>
+                        <%= button_tag(type: 'submit', class: "btn btn-success") do %>
+                            <i class="fa fa-floppy-o"></i> Guardar
+                        <% end %>
+                    <% end %>
+
+                </div>
+            </div>
+        </div>
+
+    <% end %>
+
+</div>
+
+<% if action == "edit" || action == "new"  %>
+
+  <script>
+
+    $('#btn-published').click(function() {
+
+      var btn = $('#btn-published');
+      var check = $('#check-published');
+
+      if( btn.hasClass( 'btn-danger' ) ){
+        btn.removeClass( 'btn-danger' );
+        btn.addClass( 'btn-success' );
+        btn.html('<i class="fa fa-check"></i> Publicado');
+        check.val(true);
+      }
+      else if( btn.hasClass( 'btn-success' ) ){
+        btn.removeClass( 'btn-success' );
+        btn.addClass( 'btn-danger' );      
+        btn.html('<i class="fa fa-times"></i> No publicado');
+        check.val(false);
+      }
+
+    });
+
+  </script>
+
+<% end %>

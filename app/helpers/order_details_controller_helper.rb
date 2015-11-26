@@ -1,0 +1,2 @@
+module OrderDetailsControllerHelper
+end
