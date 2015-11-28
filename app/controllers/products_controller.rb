@@ -16,7 +16,6 @@ class ProductsController < ApplicationController
     end
     @products = scope.includes(:current_price).all.stock.order('id DESC')
     @product_detail = ProductDetail.new
-    # @products = Product.includes(:current_price).all.stock.order('id DESC')
   end
 
   # GET /products/1

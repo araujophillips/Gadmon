@@ -38,57 +38,32 @@
                 <%= select_tag "order_detail[product_id]", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
 
             </div>
-            <div class="col-lg-2">
-
-                <%= f.label "Cantidad" %>
-                <%= select_tag "order_detail[quantity]", options_from_collection_for_select(@products, "id", "name"), :include_blank => '0', :class => 'form-control radius-bottom', disabled: true %>
-
-            </div>
-
-
-            <div class="col-lg-4"></div><!-- /.col-lg-4-->
+            <div class="col-lg-6"></div><!-- /.col-lg-6-->
         </div>
         <br> <!-- line break -->
         <div class="row">
-            <div class="col-lg-4">
-
-                <%= button_tag(type: 'button', id: 'btn-add-product', class: "btn btn-success") do %>
-                    <i class="fa fa-plus"></i> Agregar
-                <% end %>
-
-            </div>
-            <div class="col-lg-8"></div><!-- /.col-lg-8 -->
+            <div id="product_details_box" class="col-lg-12"></div>
         </div>
         <br> <!-- line break -->
+        <h1 class="page-header"><small>Asi va la orden...</small></h1>
+        <div id="empty_orden_alert" class="alert alert-warning g-margin-b-0" role="alert">La orden esta vacia! Debes agregar algun producto...</div>
 
-        <div class="row">
-          <table class="table table-hover">
+        <table id="order_table" class="table table-hover" style="display: none">
             <thead>
               <tr>
                 <th>#</th>
-                <th>Nombre</th>
-                <th>Precio Unitario</th>
-                <th class="text-center">Cantidad</th>
-                <th class="text-center">Descuento</th>
+                <th>Producto</th>
+                <th>Serial</th>
+                <th>Precio</th>
+                <th class="text-center">Comision</th>
+                <th class="text-center">Comentario</th>
+                <th class="text-center"></th>
                 <th></th>
               </tr>
             </thead>
-
-            <tbody>
-              <% @customers.each do |customer| %>
-                <tr>
-                  <td>1</td>
-                  <td>Nintendo Wii Blanco + 2 Pares De Controles + Juegos Original 12</td>
-                  <td>Bs 59.000.000</td>
-                  <td class="text-center">2</td>
-                  <td class="text-center">0%</td>
-                  <td>Bs. 118.000</td>
-                </tr>
-              <% end %>
+            <tbody id="order_detail">
             </tbody>
-          </table>
-        </div>
-
+        </table>
 
     <% end %>
 

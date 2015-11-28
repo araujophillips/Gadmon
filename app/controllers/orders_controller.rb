@@ -1,10 +1,12 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  # before_action :set_order, only: [:show, :edit, :update, :destroy]
 
   def update_quantity
-    @product_details = ProductDetail.where("product_id = ?", params[:product_id])
+    @product = Product.where("id = ?", params[:id])
+
+    product_details = ProductDetail.where("product_id = ?", params[:id])
     respond_to do |format|
-      format.js
+      format.json { render :json => @product.to_json(:include => [:product_details]) }
     end
   end
 
@@ -73,9 +75,9 @@ class OrdersController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_order
-      @order = Order.find(params[:id])
-    end
+    #def set_order
+    #  @order = Order.find(params[:id])
+    #end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params

@@ -51,11 +51,13 @@ $("#btn-add-product").click ->
   btn.prop "type", "button"  if btn.prop("type", "submit")
   btn.prop "type", "submit"  if btn.prop("type", "button")
 
+# Product quantity update
 $ ->
-$(document).on 'change', '#order_detail_product_id', (evt) ->
+$(document).on 'change', '#order_detail_product_id', (evt,data) ->
+  $("#product_details_box").empty();
   $.ajax 'update_quantity',
     type: 'GET'
-    url: '/order_details/update_quantity'
+    url: '/orders/update_quantity'
     dataType: 'script'
     data: {
       id: $("#order_detail_product_id option:selected").val()
@@ -63,4 +65,72 @@ $(document).on 'change', '#order_detail_product_id', (evt) ->
     error: (jqXHR, textStatus, errorThrown) ->
       console.log("AJAX Error: #{textStatus}")
     success: (data, textStatus, jqXHR) ->
-      console.log("Dynamic country select OK!")
+      console.log data
+      $("#product_details_box").append('
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Serial</th>
+                <th class="text-center">Fecha registro</th>
+                <th class="text-center">Comentario</th>
+                <th class="text-center"></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="details_box">
+            </tbody>
+          </table>
+        ')
+      product = JSON.parse data
+      if product.length == 0
+        $("#product_details_box table").hide()
+      else
+        for pkey, pval of product
+          for key, val of pval.product_details
+            comment = if !!val.comment then val.comment else "-"
+            btn = if $("#row_"+val.id).is(':visible') then "hidden" else "visible"
+            $("#details_box").append('
+                <tr>
+                  <td>'+val.id+'</td>
+                  <td>'+val.serial+'</td>
+                  <td class="text-center">'+val.created_at+'</td>
+                  <td class="text-center">'+comment+'</td>
+                  <td class="text-center">
+                    <button type="button" onclick="add_row(\''+val.product_id+'\',\''+pval.name+'\',\''+val.id+'\',\''+val.serial+'\',\''+comment+'\')" id="btn_add_'+val.id+'" class="btn btn-success btn-xs '+btn+'">
+                      <i class="fa fa-plus"></i> Agregar</span>
+                    </button></td>
+                </tr>
+              ')
+
+root = exports ? this
+
+root.add_row = (product,name,id,serial,comment) ->
+  $("#btn_add_"+id).hide()
+  $("#order_table").show()
+  if $("#empty_orden_alert").is(':visible')
+    $("#empty_orden_alert").hide()
+  $("#order_table #order_detail").append('
+      <tr id="row_'+id+'">
+        <td>'+product+'</td>
+        <td>'+name+'</td>
+        <td>'+serial+'</td>
+        <td>Bs. 2.000,00</td>
+        <td class="text-center"><span contenteditable>0</span>%</td>
+        <td class="text-center">'+comment+'</td>
+        <td class="text-center"></td>
+        <td>
+          <button type="button" onclick="remove_row(\''+product+'\',\''+id+'\',\''+serial+'\',\''+comment+'\')" id="btn_remove_'+id+'" class="btn btn-danger btn-xs">
+            <i class="fa fa-times"></i> Remover</span>
+          </button></td>
+        </td>
+      </tr>
+    ')
+
+root.remove_row = (product,id,serial,comment) ->
+  $("#btn_add_"+id).show()
+  $("#btn_add_"+id).removeClass('hidden')
+  $("#order_detail #row_"+id).remove()
+  if $("tbody#order_detail").children().length == 0
+    $("#order_table").hide()
+    $("#empty_orden_alert").show()
