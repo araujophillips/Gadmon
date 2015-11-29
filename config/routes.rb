@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   end
 
   resources :products do
+    collection do
+      get 'current_price'
+    end
     resources :product_details do
       resources :product_statuses
     end

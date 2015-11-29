@@ -65,7 +65,6 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
     error: (jqXHR, textStatus, errorThrown) ->
       console.log("AJAX Error: #{textStatus}")
     success: (data, textStatus, jqXHR) ->
-      console.log data
       $("#product_details_box").append('
           <table class="table table-hover">
             <thead>
@@ -87,6 +86,7 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
         $("#product_details_box table").hide()
       else
         for pkey, pval of product
+          price = pval.current_price.price
           for key, val of pval.product_details
             comment = if !!val.comment then val.comment else "-"
             btn = if $("#row_"+val.id).is(':visible') then "hidden" else "visible"
@@ -97,7 +97,7 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
                   <td class="text-center">'+val.created_at+'</td>
                   <td class="text-center">'+comment+'</td>
                   <td class="text-center">
-                    <button type="button" onclick="add_row(\''+val.product_id+'\',\''+pval.name+'\',\''+val.id+'\',\''+val.serial+'\',\''+comment+'\')" id="btn_add_'+val.id+'" class="btn btn-success btn-xs '+btn+'">
+                    <button type="button" onclick="add_row(\''+val.product_id+'\',\''+pval.name+'\',\''+price+'\',\''+val.id+'\',\''+val.serial+'\',\''+comment+'\')" id="btn_add_'+val.id+'" class="btn btn-success btn-xs '+btn+'">
                       <i class="fa fa-plus"></i> Agregar</span>
                     </button></td>
                 </tr>
@@ -105,7 +105,7 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
 
 root = exports ? this
 
-root.add_row = (product,name,id,serial,comment) ->
+root.add_row = (product,name,price,id,serial,comment) ->
   $("#btn_add_"+id).hide()
   $("#order_table").show()
   if $("#empty_orden_alert").is(':visible')
@@ -115,8 +115,8 @@ root.add_row = (product,name,id,serial,comment) ->
         <td>'+product+'</td>
         <td>'+name+'</td>
         <td>'+serial+'</td>
-        <td>Bs. 2.000,00</td>
-        <td class="text-center"><span contenteditable>0</span>%</td>
+        <td>Bs. <span id="price_'+id+'">'+price+'</span></td>
+        <td class="text-center"><span id="comission_'+id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate()">0</span>%</td>
         <td class="text-center">'+comment+'</td>
         <td class="text-center"></td>
         <td>
@@ -126,6 +126,7 @@ root.add_row = (product,name,id,serial,comment) ->
         </td>
       </tr>
     ')
+  calculate()
 
 root.remove_row = (product,id,serial,comment) ->
   $("#btn_add_"+id).show()
@@ -134,3 +135,30 @@ root.remove_row = (product,id,serial,comment) ->
   if $("tbody#order_detail").children().length == 0
     $("#order_table").hide()
     $("#empty_orden_alert").show()
+  calculate()
+
+root.just_numbers = (e) ->
+  keynum = if window.event then window.event.keyCode else e.which
+  if keynum == 8 or keynum == 46
+    return true
+  /\d/.test String.fromCharCode(keynum)
+
+root.calculate = () ->
+  subtotal = 0
+  comission = 0
+  $("#order_detail tr td span[id^=price_]").each ->
+    # Sum subtotal
+    i = parseFloat($(this).text());
+    subtotal += i
+    # Get row ID
+    id = this.id
+    id = id.split('_');
+    id = id[1]
+    p = parseFloat($("#comission_"+id).text())/100
+    comission += (i*p)
+  console.log subtotal
+  console.log comission
+  total = subtotal - comission
+  $("#subtotal").text(subtotal)
+  $("#comission").text(comission)
+  $("#total").text(total)

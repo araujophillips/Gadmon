@@ -1,12 +1,12 @@
 class OrdersController < ApplicationController
   # before_action :set_order, only: [:show, :edit, :update, :destroy]
 
+  # GET /orders/update_quantiy
   def update_quantity
     @product = Product.where("id = ?", params[:id])
-
     product_details = ProductDetail.where("product_id = ?", params[:id])
     respond_to do |format|
-      format.json { render :json => @product.to_json(:include => [:product_details]) }
+      format.json { render :json => @product.to_json( { :include => [ :current_price, :product_details ] } ) }
     end
   end
 

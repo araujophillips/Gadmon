@@ -43,7 +43,6 @@
         <th></th>
       </tr>
     </thead>
-
     <tbody>
       <% @products.each do |product| %>
         <tr <%= product.count == 0 && product.published == true ? 'class="danger" data-toggle="tooltip" data-placement="top" title="¡Este producto no tiene inventario disponible y esta publicado!"'.html_safe : '' %>>
