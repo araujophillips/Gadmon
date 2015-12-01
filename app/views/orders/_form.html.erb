@@ -23,7 +23,7 @@
 
                 <%= f.label "Cliente" %>
                 <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
-                <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name"), :include_blank => 'Seleccionar cliente', :class => 'form-control radius-bottom' %>
+                <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name"), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
 
             </div>
             <div class="col-lg-6"></div><!-- /.col-lg-6 -->
@@ -82,9 +82,19 @@
                             <li class="text-right">Bs. <span id="subtotal">0</span></li>
                             <li class="text-right">Bs. <span id="comission">0</span></li>
                             <li class="text-right">Bs. <span id="total">0</span></li>
+                            <!-- Hidden inputs to send data -->
+                            <%= f.text_field :subtotal, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                            <%= f.text_field :tax, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                            <%= f.text_field :comission, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                            <%= f.text_field :total, class: "hidden", value: "0", :required => true, readonly: readonly %>
                         </ul>
                     </div>
                 </div>
+
+                <%= button_tag(type: 'submit', id: "process_order" , class: "btn btn-success width-100 g-display-none") do %>
+                    <i class="fa fa-shopping-cart"></i> Procesar orden
+                <% end %>
+
             </div>
         </div>
     <% end %>

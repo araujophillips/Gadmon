@@ -110,13 +110,20 @@ root.add_row = (product,name,price,id,serial,comment) ->
   $("#order_table").show()
   if $("#empty_orden_alert").is(':visible')
     $("#empty_orden_alert").hide()
+    $("#process_order").show()
   $("#order_table #order_detail").append('
       <tr id="row_'+id+'">
-        <td>'+product+'</td>
-        <td>'+name+'</td>
+        <td>
+          <span>'+product+'<span>
+          <input class="hidden" value="'+product+'" name="order_detail[product_id]">
+        </td>
+        <td>
+          <span>'+name+'</span>
+          <input class="hidden" value="'+id+'" name="order_detail[id]">
+        </td>
         <td>'+serial+'</td>
-        <td>Bs. <span id="price_'+id+'">'+price+'</span></td>
-        <td class="text-center"><span id="comission_'+id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate()">0</span>%</td>
+        <td>Bs. <a id="price_'+id+'">'+price+'</a></td>
+        <td class="text-center"><a id="comission_'+id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate()">0</a>%</td>
         <td class="text-center">'+comment+'</td>
         <td class="text-center"></td>
         <td>
@@ -134,6 +141,7 @@ root.remove_row = (product,id,serial,comment) ->
   $("#order_detail #row_"+id).remove()
   if $("tbody#order_detail").children().length == 0
     $("#order_table").hide()
+    $("#process_order").hide()
     $("#empty_orden_alert").show()
   calculate()
 
@@ -146,7 +154,7 @@ root.just_numbers = (e) ->
 root.calculate = () ->
   subtotal = 0
   comission = 0
-  $("#order_detail tr td span[id^=price_]").each ->
+  $("#order_detail tr td a[id^=price_]").each ->
     # Sum subtotal
     i = parseFloat($(this).text());
     subtotal += i
@@ -156,9 +164,12 @@ root.calculate = () ->
     id = id[1]
     p = parseFloat($("#comission_"+id).text())/100
     comission += (i*p)
-  console.log subtotal
-  console.log comission
   total = subtotal - comission
+  # To display
   $("#subtotal").text(subtotal)
   $("#comission").text(comission)
   $("#total").text(total)
+  # To send as params
+  $("#order_subtotal").val(subtotal)
+  $("#order_comission").val(comission)
+  $("#order_total").val(total)
