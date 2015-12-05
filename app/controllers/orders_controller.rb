@@ -49,6 +49,11 @@ class OrdersController < ApplicationController
       order_detail_attributes["order_id"] = @order.id
       @order_detail = OrderDetail.create(order_detail_attributes)
 
+      # Update the product detail as sold
+      product_detail = ProductDetail.find(@order_detail.product_detail_id)
+      product_detail.status = 2
+      product_detail.save
+
     end
 
     respond_to do |format|
