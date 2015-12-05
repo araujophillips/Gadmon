@@ -36,8 +36,20 @@ class OrdersController < ApplicationController
   # POST /orders
   # POST /orders.json
   def create
-    @order = Order.new(order_params)
-    @order_details = OrderDetail.new(order_params[:order_detail])
+
+    # Creates the order removing the order details from the hash
+    @order = Order.create(order_params.except!(:order_detail))
+
+    # Set all the details into an empty array
+    order_details_attributes = order_params[:order_detail]
+
+    order_details_attributes.each do |order_detail_attributes|
+
+      # Fill the params with order_id and creates the detail
+      order_detail_attributes["order_id"] = @order.id
+      @order_detail = OrderDetail.create(order_detail_attributes)
+
+    end
 
     respond_to do |format|
       if @order.save
@@ -82,6 +94,7 @@ class OrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
-      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id)
+      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id])
     end
+
 end

@@ -26,23 +26,23 @@ $ ->
 
 # Products search
 $("#order_product_search").click ->
-  size = $("#order_detail_product_id option").size()
-  unless size is $("#order_detail_product_id").prop("size")
-    $("#order_detail_product_id").prop "size", size
+  size = $("#product_list option").size()
+  unless size is $("#product_list").prop("size")
+    $("#product_list").prop "size", size
   else
-    $("#order_detail_product_id").prop "size", 1
+    $("#product_list").prop "size", 1
 
-$("#order_detail_product_id").change ->
+$("#product_list").change ->
   customer = $(this).find("option:selected").text()
   $("#order_product_search").val customer
 
 $ ->
-  opts = $("#order_detail_product_id option").map(->
+  opts = $("#product_list option").map(->
     [ [ @value, $(this).text() ] ]
   )
   $("#order_product_search").keyup ->
     rxp = new RegExp($("#order_product_search").val(), "i")
-    optlist = $("#order_detail_product_id").empty()
+    optlist = $("#product_list").empty()
     opts.each ->
       optlist.append $("<option/>").attr("value", this[0]).text(this[1])  if rxp.test(this[1])
 
@@ -53,14 +53,14 @@ $("#btn-add-product").click ->
 
 # Product quantity update
 $ ->
-$(document).on 'change', '#order_detail_product_id', (evt,data) ->
+$(document).on 'change', '#product_list', (evt,data) ->
   $("#product_details_box").empty();
   $.ajax 'update_quantity',
     type: 'GET'
     url: '/orders/update_quantity'
     dataType: 'script'
     data: {
-      id: $("#order_detail_product_id option:selected").val()
+      id: $("#product_list option:selected").val()
     }
     error: (jqXHR, textStatus, errorThrown) ->
       console.log("AJAX Error: #{textStatus}")
@@ -86,7 +86,8 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
         $("#product_details_box table").hide()
       else
         for pkey, pval of product
-          price = pval.current_price.price
+          price_id = pval.current_price.id
+          price_val = pval.current_price.price
           for key, val of pval.product_details
             comment = if !!val.comment then val.comment else "-"
             btn = if $("#row_"+val.id).is(':visible') then "hidden" else "visible"
@@ -97,7 +98,7 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
                   <td class="text-center">'+val.created_at+'</td>
                   <td class="text-center">'+comment+'</td>
                   <td class="text-center">
-                    <button type="button" onclick="add_row(\''+val.product_id+'\',\''+pval.name+'\',\''+price+'\',\''+val.id+'\',\''+val.serial+'\',\''+comment+'\')" id="btn_add_'+val.id+'" class="btn btn-success btn-xs '+btn+'">
+                    <button type="button" onclick="add_row(\''+val.product_id+'\',\''+pval.name+'\',\''+price_id+'\',\''+price_val+'\',\''+val.id+'\',\''+val.serial+'\',\''+comment+'\')" id="btn_add_'+val.id+'" class="btn btn-success btn-xs '+btn+'">
                       <i class="fa fa-plus"></i> Agregar</span>
                     </button></td>
                 </tr>
@@ -105,29 +106,38 @@ $(document).on 'change', '#order_detail_product_id', (evt,data) ->
 
 root = exports ? this
 
-root.add_row = (product,name,price,id,serial,comment) ->
-  $("#btn_add_"+id).hide()
+root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comment) ->
+  $("#btn_add_"+detail_id).hide()
   $("#order_table").show()
   if $("#empty_orden_alert").is(':visible')
     $("#empty_orden_alert").hide()
     $("#process_order").show()
   $("#order_table #order_detail").append('
-      <tr id="row_'+id+'">
+      <tr id="row_'+detail_id+'">
         <td>
-          <span>'+product+'<span>
-          <input class="hidden" value="'+product+'" name="order_detail[product_id]">
+          <span>'+product_id+'<span>
+          <input class="hidden" value="'+product_id+'" name="order[order_detail][][product_id]">
         </td>
         <td>
-          <span>'+name+'</span>
-          <input class="hidden" value="'+id+'" name="order_detail[id]">
+          <span>'+product_name+'</span>
         </td>
-        <td>'+serial+'</td>
-        <td>Bs. <a id="price_'+id+'">'+price+'</a></td>
-        <td class="text-center"><a id="comission_'+id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate()">0</a>%</td>
-        <td class="text-center">'+comment+'</td>
+        <td>
+          <span>'+serial+'</span>
+          <input class="hidden" value="'+detail_id+'" name="order[order_detail][][product_detail_id]">
+        </td>
+        <td>
+          Bs. <a id="price_'+detail_id+'">'+price_val+'</a>
+          <input class="hidden" value="'+price_id+'" name="order[order_detail][][price_id]">
+        </td>
+        <td class="text-center">
+          <a id="comission_'+detail_id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate()">0</a>%
+        </td>
+        <td class="text-center">
+          <span>'+comment+'</span>
+        </td>
         <td class="text-center"></td>
         <td>
-          <button type="button" onclick="remove_row(\''+product+'\',\''+id+'\',\''+serial+'\',\''+comment+'\')" id="btn_remove_'+id+'" class="btn btn-danger btn-xs">
+          <button type="button" onclick="remove_row(\''+product_id+'\',\''+detail_id+'\',\''+serial+'\',\''+comment+'\')" id="btn_remove_'+detail_id+'" class="btn btn-danger btn-xs">
             <i class="fa fa-times"></i> Remover</span>
           </button></td>
         </td>

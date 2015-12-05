@@ -35,7 +35,7 @@
 
                 <%= f.label "Producto" %>
                 <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
-                <%= select_tag "order_detail[product_id]", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
+                <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
 
             </div>
             <div class="col-lg-6"></div><!-- /.col-lg-6-->
