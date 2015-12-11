@@ -1,10 +1,9 @@
 class OrdersController < ApplicationController
-  # before_action :set_order, only: [:show, :edit, :update, :destroy]
 
   # GET /orders/update_quantiy
   def update_quantity
-    @product = Product.where("id = ?", params[:id])
-    product_details = ProductDetail.where("product_id = ?", params[:id])
+    @product = Product.by_id(params[:id])
+    product_details = ProductDetail.by_id(params[:id])
     respond_to do |format|
       format.json { render :json => @product.to_json( { :include => [ :current_price, :product_details ] } ) }
     end
@@ -19,6 +18,9 @@ class OrdersController < ApplicationController
   # GET /orders/1
   # GET /orders/1.json
   def show
+    @order = Order.find(params[:id])
+    @order_details = OrderDetail.by_order_id(params[:id])
+    @customer = Customer.find(@order.customer_id)
   end
 
   # GET /orders/new
@@ -43,6 +45,8 @@ class OrdersController < ApplicationController
     # Set all the details into an empty array
     order_details_attributes = order_params[:order_detail]
 
+    puts order_params[:order_detail]
+
     order_details_attributes.each do |order_detail_attributes|
 
       # Fill the params with order_id and creates the detail
@@ -51,18 +55,15 @@ class OrdersController < ApplicationController
 
       # Update the product detail as sold
       product_detail = ProductDetail.find(@order_detail.product_detail_id)
-      product_detail.status = 2
-      product_detail.save
+      product_detail.update_attributes(:status => "2")
 
     end
 
     respond_to do |format|
       if @order.save
         format.html { redirect_to @order, notice: 'Order was successfully created.' }
-        format.json { render :show, status: :created, location: @order }
       else
         format.html { render :new }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -73,10 +74,8 @@ class OrdersController < ApplicationController
     respond_to do |format|
       if @order.update(order_params)
         format.html { redirect_to @order, notice: 'Order was successfully updated.' }
-        format.json { render :show, status: :ok, location: @order }
       else
         format.html { render :edit }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -92,14 +91,10 @@ class OrdersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    #def set_order
-    #  @order = Order.find(params[:id])
-    #end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
-      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id])
+      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
     end
 
 end

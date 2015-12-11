@@ -6,9 +6,8 @@ class Customer < ActiveRecord::Base
 	has_many :orders
 	has_many :shipping_addresses
 
-  # It returns the customers whose names, emails or usernames contain one or more words that form the query
-  def self.search(query)
-  	where(["name LIKE ? OR email LIKE ? OR username LIKE ? OR phone LIKE ?", "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%"])
+	# It returns the customers whose names, emails or usernames contain one or more words that form the query
+	def self.search(query)
+	  	where(["name LIKE ? OR email LIKE ? OR username LIKE ? OR phone LIKE ?", "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%"])
 	end
-
 end

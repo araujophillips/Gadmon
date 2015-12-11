@@ -31,10 +31,8 @@ class ProductDetailsController < ApplicationController
     respond_to do |format|
       if @product_detail.save
         format.html { redirect_to @product_detail.product, notice: 'Product detail was successfully created.' }
-        format.json { render :show, status: :created, location: @product_detail }
       else
         format.html { render :new }
-        format.json { render json: @product_detail.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -45,10 +43,8 @@ class ProductDetailsController < ApplicationController
     respond_to do |format|
       if @product_detail.update(product_detail_params)
         format.html { redirect_to @product_detail.product, notice: 'Product detail was successfully updated.' }
-        format.json { render :show, status: :ok, location: @product_detail }
       else
         format.html { render :edit }
-        format.json { render json: @product_detail.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -59,7 +55,6 @@ class ProductDetailsController < ApplicationController
     @product_detail.destroy
     respond_to do |format|
       format.html { redirect_to @product, notice: 'Product detail was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 

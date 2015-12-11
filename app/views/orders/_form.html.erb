@@ -19,36 +19,50 @@
 
         <h1 class="page-header"><%= name %><%= @order.id %></h1>
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-<%= action == "new" ? 6 : 12 %>">
 
-                <%= f.label "Cliente" %>
-                <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
-                <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name"), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
-
-            </div>
-            <div class="col-lg-6"></div><!-- /.col-lg-6 -->
-        </div>
-        <br> <!-- line break -->
-        <h1 class="page-header"><small>Productos</small></h1>
-        <div id="form-add-product" class="row">
-            <div class="col-lg-6">
-
-                <%= f.label "Producto" %>
-                <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
-                <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
+                <% if action == "new" %>
+                    <%= f.label "Cliente" %>
+                    <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
+                    <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name"), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
+                <% else %>
+                    <h4 class="g-bold">
+                        <span>Cliente: </span>
+                        <span><%= @customer.name %></span>
+                        &nbsp;|&nbsp;
+                        <span>Fecha: </span>
+                        <span><%= @order.created_at.strftime("%d-%m-%Y - %I:%m %p") %></span>
+                    </h4>
+                <% end %>
 
             </div>
-            <div class="col-lg-6"></div><!-- /.col-lg-6-->
         </div>
-        <br> <!-- line break -->
-        <div class="row">
-            <div id="product_details_box" class="col-lg-12"></div>
-        </div>
-        <br> <!-- line break -->
-        <h1 class="page-header"><small>Asi va la orden...</small></h1>
-        <div id="empty_orden_alert" class="alert alert-warning g-margin-b-0" role="alert">La orden esta vacia! Debes agregar algun producto...</div>
 
-        <table id="order_table" class="table table-hover" style="display: none">
+        <% if action == "new" %>
+            <br> <!-- line break -->
+            <h1 class="page-header"><small>Productos</small></h1>
+            <div id="form-add-product" class="row">
+                <div class="col-lg-6">
+
+                    <%= f.label "Producto" %>
+                    <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
+                    <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
+
+                </div>
+                <div class="col-lg-6"></div><!-- /.col-lg-6-->
+            </div>
+            <br> <!-- line break -->
+            <div class="row">
+                <div id="product_details_box" class="col-lg-12"></div>
+            </div>
+            <br> <!-- line break -->
+            <h1 class="page-header"><small>Productos</small></h1>
+            <div id="empty_orden_alert" class="alert alert-warning g-margin-b-0" role="alert">La orden esta vacia! Debes agregar algun producto...</div>
+        <% end %>
+
+        <br> <!-- line break -->
+
+        <table id="order_table" class="table table-hover <%= action == "new" ? "hidden" : "" %>">
             <thead>
               <tr>
                 <th>#</th>
@@ -57,11 +71,41 @@
                 <th>Precio</th>
                 <th class="text-center">Comision</th>
                 <th class="text-center">Comentario</th>
-                <th class="text-center"></th>
-                <th></th>
               </tr>
             </thead>
             <tbody id="order_detail">
+
+                <% if action == "show" %>
+
+                    <% @order_details.each_with_index do |order_detail,i| %>
+
+                        <% i = i + 1 %>
+
+                        <tr id="row_<%= order_detail.product_detail_id %>">
+                            <td>
+                                <span><%= i %><span>
+                            </td>
+                            <td>
+                                <span><%= link_to order_detail.product.name, order_detail.product %></span>
+                            </td>
+                            <td>
+                                <span><%= link_to order_detail.product_detail.serial, edit_product_product_detail_path(order_detail.product,order_detail.product_detail) %></span>
+                            </td>
+                            <td>
+                                <span><%= number_to_currency(order_detail.price.price, unit: "Bs. ", separator: ",", delimiter: ".") %></span>
+                            </td>
+                            <td class="text-center">
+                                <span><%= order_detail.comission %>%</span>
+                            </td>
+                            <td class="text-center">
+                                <span><%= order_detail.product_detail.comment %></span>
+                            </td>
+                        </tr>
+
+                    <% end %>
+
+                <% end %>
+
             </tbody>
         </table>
         <br> <!-- line break -->
@@ -79,14 +123,29 @@
                             <li>Total</li>
                         </ul>
                         <ul class="list-5 no-bullet">
-                            <li class="text-right">Bs. <span id="subtotal">0</span></li>
-                            <li class="text-right">Bs. <span id="comission">0</span></li>
-                            <li class="text-right">Bs. <span id="total">0</span></li>
-                            <!-- Hidden inputs to send data -->
-                            <%= f.text_field :subtotal, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                            <%= f.text_field :tax, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                            <%= f.text_field :comission, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                            <%= f.text_field :total, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                            <li class="text-right">
+                                <% if action == "new" %>
+                                    Bs. <span id="subtotal">0</span>
+                                    <%= f.text_field :subtotal, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                                <% else %>
+                                    <%= number_to_currency(@order.subtotal, unit: "Bs. ", separator: ",", delimiter: ".") %>
+                                <% end %>
+                            </li>
+                            <li class="text-right">
+                                <% if action == "new" %>
+                                    Bs. <span id="comission">0</span>
+                                    <%= f.text_field :comission, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                                <% else %>
+                                    <%= number_to_currency(@order.comission, unit: "Bs. ", separator: ",", delimiter: ".") %>
+                                <% end %>
+                            <li class="text-right">
+                                <% if action == "new" %>
+                                    Bs. <span id="total">0</span>
+                                    <%= f.text_field :total, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                                <% else %>
+                                    <%= number_to_currency(@order.total, unit: "Bs. ", separator: ",", delimiter: ".") %>
+                                <% end %>
+                            </li>
                         </ul>
                     </div>
                 </div>

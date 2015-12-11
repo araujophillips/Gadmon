@@ -108,7 +108,7 @@ root = exports ? this
 
 root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comment) ->
   $("#btn_add_"+detail_id).hide()
-  $("#order_table").show()
+  $("#order_table").removeClass( "hidden" );
   if $("#empty_orden_alert").is(':visible')
     $("#empty_orden_alert").hide()
     $("#process_order").show()
@@ -130,7 +130,8 @@ root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comm
           <input class="hidden" value="'+price_id+'" name="order[order_detail][][price_id]">
         </td>
         <td class="text-center">
-          <a id="comission_'+detail_id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate()">0</a>%
+          <label id="comission_'+detail_id+'" maxlenght="2" contenteditable onkeypress="return just_numbers(event)" onkeyup="calculate(\''+detail_id+'\')">0</label>%
+          <input id="comission_'+detail_id+'_input" class="hidden" value="0" name="order[order_detail][][comission]">
         </td>
         <td class="text-center">
           <span>'+comment+'</span>
@@ -161,7 +162,14 @@ root.just_numbers = (e) ->
     return true
   /\d/.test String.fromCharCode(keynum)
 
-root.calculate = () ->
+root.calculate = (row) ->
+  comission_percent = $("#comission_"+row).html()
+
+  if comission_percent == ""
+    $("#comission_"+row).html("0")
+    comission_percent = 0
+
+  $("#comission_"+row+'_input').val(comission_percent)
   subtotal = 0
   comission = 0
   $("#order_detail tr td a[id^=price_]").each ->

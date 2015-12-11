@@ -31,10 +31,8 @@ class ShippingAddressesController < ApplicationController
     respond_to do |format|
       if @shipping_address.save
         format.html { redirect_to @shipping_address.customer, notice: 'Shipping address was successfully created.' }
-        format.json { render :show, status: :created, location: @shipping_address }
       else
         format.html { render :new }
-        format.json { render json: @shipping_address.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -45,10 +43,8 @@ class ShippingAddressesController < ApplicationController
     respond_to do |format|
       if @shipping_address.update(shipping_address_params)
         format.html { redirect_to @shipping_address.customer, notice: 'Shipping address was successfully updated.' }
-        format.json { render :show, status: :ok, location: @shipping_address }
       else
         format.html { render :edit }
-        format.json { render json: @shipping_address.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -59,7 +55,6 @@ class ShippingAddressesController < ApplicationController
     @shipping_address.destroy
     respond_to do |format|
       format.html { redirect_to shipping_addresses_url, notice: 'Shipping address was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
