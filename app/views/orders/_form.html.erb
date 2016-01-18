@@ -95,10 +95,10 @@
                                 <span><%= number_to_currency(order_detail.price.price, unit: "Bs. ", separator: ",", delimiter: ".") %></span>
                             </td>
                             <td class="text-center">
-                                <span><%= order_detail.comission %>%</span>
+                                <span><%= order_detail.comission.present? ? order_detail.comission : '0' %>%</span>
                             </td>
                             <td class="text-center">
-                                <span><%= order_detail.product_detail.comment %></span>
+                                <span><%= order_detail.product_detail.comment.present? ? order_detail.product_detail.comment : '-' %></span>
                             </td>
                         </tr>
 
@@ -120,6 +120,7 @@
                         <ul class="list-5 no-bullet g-bold">
                             <li>Subtotal</li>
                             <li>Comisiones</li>
+                            <li>IVA</li>
                             <li>Total</li>
                         </ul>
                         <ul class="list-5 no-bullet">
@@ -138,6 +139,18 @@
                                 <% else %>
                                     <%= number_to_currency(@order.comission, unit: "Bs. ", separator: ",", delimiter: ".") %>
                                 <% end %>
+                            </li>
+
+                            <li class="text-right">
+                                <% if action == "new" %>
+                                    Bs. <span id="tax">0</span>
+                                    <input class="hidden" value="<%= ApplicationController::IVA %> " id="iva">
+                                    <%= f.text_field :tax, class: "hidden", value: "0", :required => true, readonly: readonly %>
+                                <% else %>
+                                    <%= number_to_currency(@order.tax, unit: "Bs. ", separator: ",", delimiter: ".") %>
+                                <% end %>
+                            </li>
+
                             <li class="text-right">
                                 <% if action == "new" %>
                                     Bs. <span id="total">0</span>

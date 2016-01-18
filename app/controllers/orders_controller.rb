@@ -12,7 +12,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.all
+    @orders = Order.all.order('id DESC')
   end
 
   # GET /orders/1
@@ -45,7 +45,7 @@ class OrdersController < ApplicationController
     # Set all the details into an empty array
     order_details_attributes = order_params[:order_detail]
 
-    puts order_params[:order_detail]
+    # puts order_params[:order_detail]
 
     order_details_attributes.each do |order_detail_attributes|
 

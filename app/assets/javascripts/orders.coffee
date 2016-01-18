@@ -5,6 +5,7 @@
 # Customers search
 $("#order_customer_search").click ->
   size = $("#order_customer_id option").size()
+  console.log(size)
   unless size is $("#order_customer_id").prop("size")
     $("#order_customer_id").prop "size", size
   else
@@ -27,6 +28,7 @@ $ ->
 # Products search
 $("#order_product_search").click ->
   size = $("#product_list option").size()
+  console.log(size)
   unless size is $("#product_list").prop("size")
     $("#product_list").prop "size", size
   else
@@ -163,12 +165,11 @@ root.just_numbers = (e) ->
   /\d/.test String.fromCharCode(keynum)
 
 root.calculate = (row) ->
+  # Calculate comissions
   comission_percent = $("#comission_"+row).html()
-
   if comission_percent == ""
     $("#comission_"+row).html("0")
     comission_percent = 0
-
   $("#comission_"+row+'_input').val(comission_percent)
   subtotal = 0
   comission = 0
@@ -182,12 +183,18 @@ root.calculate = (row) ->
     id = id[1]
     p = parseFloat($("#comission_"+id).text())/100
     comission += (i*p)
-  total = subtotal - comission
+  # Calculate taxes
+  iva = $("#iva").val()
+  tax = subtotal * iva
+  # Calculate total
+  total = subtotal - comission - tax
   # To display
   $("#subtotal").text(subtotal)
   $("#comission").text(comission)
+  $("#tax").text(tax)
   $("#total").text(total)
   # To send as params
   $("#order_subtotal").val(subtotal)
   $("#order_comission").val(comission)
+  $("#order_tax").val(tax)
   $("#order_total").val(total)
