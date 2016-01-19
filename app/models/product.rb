@@ -1,6 +1,6 @@
 class Product < ActiveRecord::Base
-	has_many :product_details
-	has_many :prices
+	has_many :product_details, :dependent => :destroy
+	has_many :prices, :dependent => :destroy
     has_many :order_details
 	has_one :current_price, -> {
         where('prices.id = (SELECT MAX(id) FROM prices p2 WHERE product_id = prices.product_id)') 

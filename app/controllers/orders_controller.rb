@@ -1,4 +1,5 @@
 class OrdersController < ApplicationController
+  before_action :set_order, only: [:show, :destroy]
 
   # GET /orders/update_quantiy
   def update_quantity
@@ -18,7 +19,7 @@ class OrdersController < ApplicationController
   # GET /orders/1
   # GET /orders/1.json
   def show
-    @order = Order.find(params[:id])
+    # @order = Order.find(params[:id])
     @order_details = OrderDetail.by_order_id(params[:id])
     @customer = Customer.find(@order.customer_id)
   end
@@ -85,13 +86,15 @@ class OrdersController < ApplicationController
   def destroy
     @order.destroy
     respond_to do |format|
-      format.html { redirect_to orders_url, notice: 'Order was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to orders_url, notice: 'Orden eliminada exitosamente.' }
     end
   end
 
   private
-
+    # Use callbacks to share common setup or constraints between actions.
+    def set_order
+      @order = Order.find(params[:id])
+    end
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
       params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
