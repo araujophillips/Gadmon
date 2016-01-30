@@ -11,4 +11,8 @@ class Order < ActiveRecord::Base
     def self.by_id(id)
     	where("id = ?", id)
     end
+
+	def self.by_customer_id(customer_id)
+		where("customer_id = ?", customer_id).order('id DESC')
+	end
 end

@@ -1,0 +1,49 @@
+<% if action == 'index' %>
+    <%= render 'sidebar' %>
+<% end %>
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <p id="notice"><%= notice %></p>
+    <h1 class="page-header">Ordenes</h1>
+    <div class="row"></div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th class="text-center">Fecha</th>
+                <th>Subtotal</th>
+                <th>Comisiones</th>
+                <th>IVA</th>
+                <th>Total</th>
+                <th class="text-center">Factura</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @orders.each do |order| %>
+                <tr>
+                    <td><%= link_to order.id, order_path(order.id) %></td>
+                    <td><%= link_to order.customer.name, customer_path(order.customer_id) %></td>
+                    <td class="text-center"><%= order.created_at.strftime("%d-%m-%Y - %I:%m %p") %></td>
+                    <td><%= number_to_currency(order.subtotal, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+                    <td><%= number_to_currency(order.comission, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+                    <td><%= number_to_currency(order.tax, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+                    <td><%= number_to_currency(order.total, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+                    <td class="text-center"><%= order.invoice.present? ? order.invoice : '-' %></td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-gear"></i> <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><%= link_to 'Ver detalle', order %></li>
+                                <li><%= link_to 'Editar', edit_order_path(order) %></li>
+                                <li><%= link_to 'Eliminar', order, method: :delete, data: { confirm: '¿Seguro que deseas eliminar la orden ' + order.id.to_s + '?' } %></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>
