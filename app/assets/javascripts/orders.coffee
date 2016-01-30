@@ -62,7 +62,7 @@ $(document).on 'change', '#product_list', (evt,data) ->
     url: '/orders/update_quantity'
     dataType: 'script'
     data: {
-      id: $("#product_list option:selected").val()
+      product_id: $("#product_list option:selected").val()
     }
     error: (jqXHR, textStatus, errorThrown) ->
       console.log("AJAX Error: #{textStatus}")
@@ -90,7 +90,7 @@ $(document).on 'change', '#product_list', (evt,data) ->
         for pkey, pval of product
           price_id = pval.current_price.id
           price_val = pval.current_price.price
-          for key, val of pval.product_details
+          for key, val of pval.product_details_availables
             comment = if !!val.comment then val.comment else "-"
             btn = if $("#row_"+val.id).is(':visible') then "hidden" else "visible"
             $("#details_box").append('
@@ -110,14 +110,15 @@ root = exports ? this
 
 root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comment) ->
   $("#btn_add_"+detail_id).hide()
-  $("#order_table").removeClass( "hidden" );
+  $("#order_table").removeClass("hidden")
+  $("#order_table").show()
   if $("#empty_orden_alert").is(':visible')
     $("#empty_orden_alert").hide()
     $("#process_order").show()
   $("#order_table #order_detail").append('
       <tr id="row_'+detail_id+'">
         <td>
-          <span>'+product_id+'<span>
+          <span>'+product_id+'</span>
           <input class="hidden" value="'+product_id+'" name="order[order_detail][][product_id]">
         </td>
         <td>
@@ -138,9 +139,8 @@ root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comm
         <td class="text-center">
           <span>'+comment+'</span>
         </td>
-        <td class="text-center"></td>
         <td>
-          <button type="button" onclick="remove_row(\''+product_id+'\',\''+detail_id+'\',\''+serial+'\',\''+comment+'\')" id="btn_remove_'+detail_id+'" class="btn btn-danger btn-xs">
+          <button type="button" onclick="remove_row(\''+product_id+'\',\''+product_name+'\',\''+detail_id+'\',\''+serial+'\',\''+comment+'\')" id="btn_remove_'+detail_id+'" class="btn btn-danger btn-xs">
             <i class="fa fa-times"></i> Remover</span>
           </button></td>
         </td>
@@ -148,21 +148,27 @@ root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comm
     ')
   calculate()
 
-root.remove_row = (product,id,serial,comment) ->
+root.remove_row = (product_id,product_name,id,serial,comment) ->
   $("#btn_add_"+id).show()
   $("#btn_add_"+id).removeClass('hidden')
   $("#order_detail #row_"+id).remove()
+  # Add the product to dropdown if not exists
+  add_to_dropdown(product_id,product_name)
   if $("tbody#order_detail").children().length == 0
     $("#order_table").hide()
     $("#process_order").hide()
+    $("#update_order").hide()
     $("#empty_orden_alert").show()
   calculate()
 
-root.just_numbers = (e) ->
-  keynum = if window.event then window.event.keyCode else e.which
-  if keynum == 8 or keynum == 46
-    return true
-  /\d/.test String.fromCharCode(keynum)
+root.add_to_dropdown = (id,name)  ->
+  exists = false
+  $('#product_list option').each ->
+    if @value == id
+      exists = true
+  if exists == false
+    $("#product_list").append('<option value="'+id+'">'+name+'</option>')
+  return
 
 root.calculate = (row) ->
   # Calculate comissions
@@ -198,3 +204,9 @@ root.calculate = (row) ->
   $("#order_comission").val(comission)
   $("#order_tax").val(tax)
   $("#order_total").val(total)
+
+root.just_numbers = (e) ->
+  keynum = if window.event then window.event.keyCode else e.which
+  if keynum == 8 or keynum == 46
+    return true
+  /\d/.test String.fromCharCode(keynum)

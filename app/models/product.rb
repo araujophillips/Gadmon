@@ -1,13 +1,13 @@
 class Product < ActiveRecord::Base
 	has_many :product_details, :dependent => :destroy
 	has_many :prices, :dependent => :destroy
-    has_many :order_details
+    has_many :order_details, :dependent => :destroy
 	has_one :current_price, -> {
         where('prices.id = (SELECT MAX(id) FROM prices p2 WHERE product_id = prices.product_id)') 
     }, class_name: 'Price'
 
-  accepts_nested_attributes_for :prices 
-  accepts_nested_attributes_for :product_details
+    accepts_nested_attributes_for :prices 
+    accepts_nested_attributes_for :product_details
 
     def self.by_id(id)
       where("id = ?", id)
@@ -32,6 +32,11 @@ class Product < ActiveRecord::Base
         .joins(:product_details => :product_status)
         .where(:product_statuses => { :available => true })
         .group('products.id')
+    end
+
+    # Returns a list with product details availables on the inventory
+    def product_details_availables
+      ProductDetail.availables.by_id(self.id)
     end
 
 end

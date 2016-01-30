@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'orders/:id/update_quantity' => 'orders#update_quantity'
+
   get 'product_statuses/list'
 
   resources :customers do

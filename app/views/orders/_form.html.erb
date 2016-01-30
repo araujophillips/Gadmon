@@ -19,13 +19,15 @@
 
         <h1 class="page-header"><%= name %><%= @order.id %></h1>
         <div class="row">
-            <div class="col-lg-<%= action == "new" ? 6 : 12 %>">
+            <div class="col-lg-<%= action == "new" || action == "edit" ? 6 : 12 %>">
 
-                <% if action == "new" %>
+                <% if action == "new" || action == "edit" %>
                     <%= f.label "Cliente" %>
                     <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
-                    <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name"), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
-                <% else %>
+
+                    <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
+
+                <% elsif action == "show" %>
                     <h4 class="g-bold">
                         <span>Cliente: </span>
                         <span><%= @customer.name %></span>
@@ -38,7 +40,7 @@
             </div>
         </div>
 
-        <% if action == "new" %>
+        <% if action == "new" || action == "edit" %>
             <br> <!-- line break -->
             <h1 class="page-header"><small>Productos</small></h1>
             <div id="form-add-product" class="row">
@@ -57,7 +59,7 @@
             </div>
             <br> <!-- line break -->
             <h1 class="page-header"><small>Productos</small></h1>
-            <div id="empty_orden_alert" class="alert alert-warning g-margin-b-0" role="alert">La orden esta vacia! Debes agregar algun producto...</div>
+            <div id="empty_orden_alert" class="alert alert-warning g-margin-b-0 <%= action == "edit" ? "g-display-none" : "" %>" role="alert">La orden esta vacia! Debes agregar algun producto...</div>
         <% end %>
 
         <br> <!-- line break -->
@@ -71,11 +73,14 @@
                 <th>Precio</th>
                 <th class="text-center">Comision</th>
                 <th class="text-center">Comentario</th>
+                <% if action == "edit" %>
+                    <th></th>
+                <% end %>
               </tr>
             </thead>
             <tbody id="order_detail">
 
-                <% if action == "show" %>
+                <% if action == "show" || action == "edit" %>
 
                     <% @order_details.each_with_index do |order_detail,i| %>
 
@@ -83,23 +88,39 @@
 
                         <tr id="row_<%= order_detail.product_detail_id %>">
                             <td>
-                                <span><%= i %><span>
+                                <span><%= i %></span>
+                                <input class="hidden" value="<%= i %>" name="order[order_detail][][product_id]">
                             </td>
                             <td>
                                 <span><%= link_to order_detail.product.name, order_detail.product %></span>
                             </td>
                             <td>
                                 <span><%= link_to order_detail.product_detail.serial, edit_product_product_detail_path(order_detail.product,order_detail.product_detail) %></span>
+                                <input class="hidden" value="<%= order_detail.product_detail_id %>" name="order[order_detail][][product_detail_id]">
                             </td>
                             <td>
-                                <span><%= number_to_currency(order_detail.price.price, unit: "Bs. ", separator: ",", delimiter: ".") %></span>
+                                Bs. <a id="price_<%= order_detail.product_detail_id %>"><%= order_detail.price.price %></a>
+                                <input class="hidden" value="<%= order_detail.price.id %>" name="order[order_detail][][price_id]">
                             </td>
                             <td class="text-center">
-                                <span><%= order_detail.comission.present? ? order_detail.comission : '0' %>%</span>
+                                <% if action == 'show' %>
+                                    <label id="comission_<%= order_detail.product_detail_id %>" maxlenght="2"><%= order_detail.comission.present? ? order_detail.comission : '0' %></label>%
+                                <% else %>
+                                    <label id="comission_<%= order_detail.product_detail_id %>" maxlenght="2" contenteditable="" onkeypress="return just_numbers(event)" onkeyup="calculate('<%= order_detail.product_detail_id %>')"><%= order_detail.comission.present? ? order_detail.comission : '0' %></label>%
+                                <% end %>
+                                <input id="comission_<%= order_detail.product_detail_id %>_input" class="hidden" value="<%= order_detail.comission %>" name="order[order_detail][][comission]">
                             </td>
+
+
                             <td class="text-center">
                                 <span><%= order_detail.product_detail.comment.present? ? order_detail.product_detail.comment : '-' %></span>
                             </td>
+                            <% if action == "edit" %>
+                                <td>
+                                    <button type="button" onclick="remove_row(<%= order_detail.product_id %>,'<%= order_detail.product.name %>',<%= order_detail.product_detail_id %>,'<%= order_detail.product_detail.serial %>','<%= order_detail.product_detail.comment %>')" id="btn_remove_<%= order_detail.product_detail_id %>" class="btn btn-danger btn-xs"> <i class="fa fa-times"></i> Remover </button>
+                                </td>
+                            <% end %>
+
                         </tr>
 
                     <% end %>
@@ -125,39 +146,23 @@
                         </ul>
                         <ul class="list-5 no-bullet">
                             <li class="text-right">
-                                <% if action == "new" %>
-                                    Bs. <span id="subtotal">0</span>
-                                    <%= f.text_field :subtotal, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                                <% else %>
-                                    <%= number_to_currency(@order.subtotal, unit: "Bs. ", separator: ",", delimiter: ".") %>
-                                <% end %>
+                                Bs. <span id="subtotal"><%= @order.subtotal.present? ? @order.subtotal : 0 %></span>
+                                <%= f.text_field :subtotal, class: "hidden", :value => ( @order.subtotal.present? ? @order.subtotal : 0 ), :required => true, readonly: readonly %>
                             </li>
                             <li class="text-right">
-                                <% if action == "new" %>
-                                    Bs. <span id="comission">0</span>
-                                    <%= f.text_field :comission, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                                <% else %>
-                                    <%= number_to_currency(@order.comission, unit: "Bs. ", separator: ",", delimiter: ".") %>
-                                <% end %>
+                                Bs. <span id="comission"><%= @order.comission.present? ? @order.comission : 0 %></span>
+                                <%= f.text_field :comission, class: "hidden", :value => ( @order.comission.present? ? @order.comission : 0 ), :required => true, readonly: readonly %>
                             </li>
 
                             <li class="text-right">
-                                <% if action == "new" %>
-                                    Bs. <span id="tax">0</span>
-                                    <input class="hidden" value="<%= ApplicationController::IVA %> " id="iva">
-                                    <%= f.text_field :tax, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                                <% else %>
-                                    <%= number_to_currency(@order.tax, unit: "Bs. ", separator: ",", delimiter: ".") %>
-                                <% end %>
+                                Bs. <span id="tax"><%= @order.tax.present? ? @order.tax : 0 %></span>
+                                <input class="hidden" value="<%= ApplicationController::IVA %> " id="iva">
+                                <%= f.text_field :tax, class: "hidden", :value => ( @order.tax.present? ? @order.tax : 0 ), :required => true, readonly: readonly %>
                             </li>
 
                             <li class="text-right">
-                                <% if action == "new" %>
-                                    Bs. <span id="total">0</span>
-                                    <%= f.text_field :total, class: "hidden", value: "0", :required => true, readonly: readonly %>
-                                <% else %>
-                                    <%= number_to_currency(@order.total, unit: "Bs. ", separator: ",", delimiter: ".") %>
-                                <% end %>
+                                Bs. <span id="total"><%= @order.total.present? ? @order.total : 0 %></span>
+                                <%= f.text_field :total, class: "hidden", :value => ( @order.total.present? ? @order.total : 0 ), :required => true, readonly: readonly %>
                             </li>
                         </ul>
                     </div>
@@ -165,6 +170,14 @@
 
                 <%= button_tag(type: 'submit', id: "process_order" , class: "btn btn-success width-100 g-display-none") do %>
                     <i class="fa fa-shopping-cart"></i> Procesar orden
+                <% end %>
+
+                <% if action == "show" %>
+                    <%= link_to '<button type="button" class="btn btn-default width-100"><i class="fa fa-pencil"></i> Editar order</button>'.html_safe, edit_order_path(@order) %>
+                <% elsif action == "edit" %>
+                    <%= button_tag(type: 'submit', id: "update_order" , class: "btn btn-success width-100") do %>
+                        <i class="fa fa-floppy-o"></i> Actualizar orden
+                    <% end %>
                 <% end %>
 
             </div>

@@ -8,8 +8,7 @@ class ProductDetail < ActiveRecord::Base
 	end
 
 	def self.availables
-		joins(:product_details => :product_status)
+		joins(:product_status)
     	.where(:product_statuses => { :available => true })
     end
-
 end

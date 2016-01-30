@@ -1,12 +1,15 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :destroy]
+  before_action :set_customers, only: [:edit, :new]
+  before_action :set_order_details, only: [:edit, :show]
+  before_action :set_products, only: [:edit, :show, :new]
+  before_action :set_order, only: [:edit, :show, :destroy]
 
-  # GET /orders/update_quantiy
+  # GET /orders/update_quantity
   def update_quantity
-    @product = Product.by_id(params[:id])
-    product_details = ProductDetail.by_id(params[:id])
+    @product = Product.by_id(params[:product_id])
+    response = @product.to_json( { :include => [ :current_price ], :methods => [ :product_details_availables ]  } )
     respond_to do |format|
-      format.json { render :json => @product.to_json( { :include => [ :current_price, :product_details ] } ) }
+      format.json { render :json => response}
     end
   end
 
@@ -19,17 +22,12 @@ class OrdersController < ApplicationController
   # GET /orders/1
   # GET /orders/1.json
   def show
-    # @order = Order.find(params[:id])
-    @order_details = OrderDetail.by_order_id(params[:id])
     @customer = Customer.find(@order.customer_id)
   end
 
   # GET /orders/new
   def new
     @order = Order.new
-    @customers = Customer.all.order('name ASC')
-    @products = Product.only_with_stock.order('name ASC')
-    @product_details = ProductDetail.all
   end
 
   # GET /orders/1/edit
@@ -39,30 +37,12 @@ class OrdersController < ApplicationController
   # POST /orders
   # POST /orders.json
   def create
-
     # Creates the order removing the order details from the hash
     @order = Order.create(order_params.except!(:order_detail))
-
-    # Set all the details into an empty array
-    order_details_attributes = order_params[:order_detail]
-
-    # puts order_params[:order_detail]
-
-    order_details_attributes.each do |order_detail_attributes|
-
-      # Fill the params with order_id and creates the detail
-      order_detail_attributes["order_id"] = @order.id
-      @order_detail = OrderDetail.create(order_detail_attributes)
-
-      # Update the product detail as sold
-      product_detail = ProductDetail.find(@order_detail.product_detail_id)
-      product_detail.update_attributes(:status => "2")
-
-    end
-
+    OrderDetail.process_order_details(@order,order_params[:order_detail])
     respond_to do |format|
       if @order.save
-        format.html { redirect_to @order, notice: 'Order was successfully created.' }
+        format.html { redirect_to @order, notice: 'Orden creada exitosamente.' }
       else
         format.html { render :new }
       end
@@ -72,9 +52,13 @@ class OrdersController < ApplicationController
   # PATCH/PUT /orders/1
   # PATCH/PUT /orders/1.json
   def update
+    @order = Order.find(params[:id])
     respond_to do |format|
-      if @order.update(order_params)
-        format.html { redirect_to @order, notice: 'Order was successfully updated.' }
+      if @order.update_attributes(order_params.except!(:order_detail))
+        if order_params[:order_detail].present?
+          OrderDetail.process_order_details(@order,order_params[:order_detail])
+        end
+        format.html { redirect_to @order, notice: 'Orden actualizada exitosamente.' }
       else
         format.html { render :edit }
       end
@@ -91,10 +75,25 @@ class OrdersController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = Order.find(params[:id])
     end
+
+    def set_order_details
+      @order_details = OrderDetail.joins(:product).by_order_id(params[:id])
+    end
+
+    def set_customers
+      @customers = Customer.all.order('name ASC')
+    end
+
+    def set_products
+      @products = Product.only_with_stock.order('name ASC')
+      @product_details = ProductDetail.all
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
       params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id, :comission])

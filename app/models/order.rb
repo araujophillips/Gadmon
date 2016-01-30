@@ -7,4 +7,5 @@ class Order < ActiveRecord::Base
     def self.by_id(id)
     	where("id = ?", id)
     end
+
 end
