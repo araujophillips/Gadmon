@@ -15,19 +15,15 @@ class ProductsController < ApplicationController
       scope = scope.order(ordering)
     end
     @products = scope.includes(:current_price).all.stock.order('id DESC')
-    @product_detail = ProductDetail.new
   end
 
   # GET /products/1
   # GET /products/1.json
   def show
-    @price = Price.new
-    @product_detail = ProductDetail.new
   end
 
   # GET /products/new
   def new
-    @product = Product.new
     @product.prices.build
   end
 
@@ -70,14 +66,11 @@ class ProductsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_product
       @product = Product.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
       params.require(:product).permit(:name, :published, prices_attributes: [ :id, :product_id, :price, :comment ])
     end
-
 end

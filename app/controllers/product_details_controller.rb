@@ -6,11 +6,13 @@ class ProductDetailsController < ApplicationController
   # GET /product_details.json
   def index
     @product_details = ProductDetail.all
+    puts "Hola"
   end
 
   # GET /product_details/1
   # GET /product_details/1.json
   def show
+    puts "Chao"
   end
 
   # GET /product_details/new
