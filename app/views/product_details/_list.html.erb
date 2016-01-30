@@ -11,16 +11,24 @@
 			        <th>#</th>
 			        <th>Serial</th>
 			        <th></th>
+			        <th class="text-center">Orden</th>
 			        <th class="text-center">Comentario</th>
 			        <th></th>
 			      </tr>
 			    </thead>
 			    <tbody>
 			      <% @product.product_details.each do |product_detail| %>
-			        <tr>
+			        <tr <%= !product_detail.order_detail.nil? && product_detail.product_status.available == true ? 'class="danger" data-toggle="tooltip" data-placement="top" title="¡Esta unidad esta disponible y atada a una orden a la vez!"'.html_safe : '' %> <%= product_detail.order_detail.nil? && product_detail.product_status.id == 2 ? 'class="danger" data-toggle="tooltip" data-placement="top" title="¡Esta unidad esta vendida y no pertenece a una orden!"'.html_safe : '' %>>
 			          <td><%= product_detail.id %></td>
 			          <td><%= link_to product_detail.serial, edit_product_product_detail_path(@product, product_detail) %></td>
 			          <td class="text-center"><span class="label label-<%= product_detail.product_status.available == true ? 'success' : 'danger' %>"><%= product_detail.product_status.name %></span></td>
+			          <td class="text-center">
+			          	<% if product_detail.order_detail.present? %> 
+			          		<%= link_to product_detail.order_detail.order_id, order_path(product_detail.order_detail.order_id) %> 
+			          	<% else %>
+			          		<span>-</span>
+			          	<% end %> 
+			          </td>
 			          <td class="text-center"><%= product_detail.comment.empty? ? '-' : product_detail.comment %></td>
 			          <td class="text-center">
 			            <div class="btn-group">
