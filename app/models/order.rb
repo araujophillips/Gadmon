@@ -8,6 +8,10 @@ class Order < ActiveRecord::Base
 	has_many :order_details, :dependent => :destroy
     accepts_nested_attributes_for :order_details
 
+	def self.search(query)
+		where('id = ? OR invoice = ?', query, query)
+	end
+
     def self.by_id(id)
     	where("id = ?", id)
     end

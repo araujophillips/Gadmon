@@ -8,7 +8,7 @@ class CustomersController < ApplicationController
   # GET /customers.json
   def index
     scope = Customer
-    if params[:search]
+    if params[:search].present?
       scope = scope.search(params[:search])
     end
     if params[:ordering] && ordering = ORDERS[params[:ordering].to_i]

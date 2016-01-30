@@ -14,14 +14,20 @@
         </tr>
       </thead>
       <tbody>
-        <% @customer.shipping_addresses.each do |shipping_address| %>
+        <% @customer.shipping_addresses.each_with_index do |shipping_address,i| %>
+          <% i = i + 1 %>
           <tr>
-            <td><%= shipping_address.id %></td>
+            <td><%= i %></td>
             <td><%= link_to shipping_address.address, customer_shipping_address_path(@customer, shipping_address) %></td>
             <td><%= shipping_address.state %></td>
             <td><%= shipping_address.city %></td>
-            <td><%= shipping_address.office == true ? 'Oficina' : 'Residencia' %></td>
-
+            <td>
+              <% if shipping_address.office == true %>
+                <span>Oficina (<%= shipping_address.company %>)</span>
+              <% else %>
+                <span>Residencia</span>
+              <% end %>
+            </td>
             <td class="text-center">
               <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">

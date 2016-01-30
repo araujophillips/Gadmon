@@ -5,6 +5,33 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <p id="notice"><%= notice %></p>
     <h1 class="page-header">Ordenes</h1>
+
+
+    <div class="row">
+
+    <%= form_tag(orders_path, :method => "get", id: "customers-search-form", role: "search") do %>
+
+      <div class="col-lg-8">
+        <div class="input-group">
+          <span class="input-group-btn">
+            <%= button_tag(type: 'submit', class: "btn btn-default") do %>
+              Buscar
+            <% end %>
+          </span>
+          <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Ingrese el numero de orden o factura...' %>
+        </div><!-- /input-group -->
+      </div><!-- /.col-lg-8 -->
+
+      <div class="col-lg-4">
+        <%= select_tag(:ordering, options_for_select( [ ['Mas reciente', "0"], ['Mas antiguo', "1"] ], :selected => params[:ordering] ), { :class => 'form-control' } )  %> 
+      </div><!-- /.col-lg-4 -->
+
+    <% end %>
+
+    </div>
+    <br>
+
+
     <% if !@orders.empty? %>
         <div class="row"></div>
         <table class="table table-hover">

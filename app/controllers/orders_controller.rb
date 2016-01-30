@@ -4,6 +4,9 @@ class OrdersController < ApplicationController
   before_action :set_products, only: [:edit, :show, :new]
   before_action :set_order, only: [:edit, :show, :destroy]
 
+  # Params for ordering dropdown
+  ORDERS = [ "id DESC", "id ASC" ]
+
   # GET /orders/update_quantity
   def update_quantity
     @product = Product.by_id(params[:product_id])
@@ -16,7 +19,14 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.all.order('id DESC')
+    scope = Order
+    if params[:search].present?
+      scope = scope.search(params[:search])
+    end
+    if params[:ordering] && ordering = ORDERS[params[:ordering].to_i]
+      scope = scope.order(ordering)
+    end
+    @orders = scope.all.order('id DESC')
   end
 
   # GET /orders/1
