@@ -1,4 +1,7 @@
 class ProductDetail < ActiveRecord::Base
+	validates :serial, presence: true, uniqueness: true
+	validates :status, presence: true
+
 	belongs_to :product, foreign_key: :product_id
 	belongs_to :product_status, foreign_key: :status
 	has_one :order_detail

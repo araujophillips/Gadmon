@@ -1,12 +1,8 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">Historial de precios</h1>
-	
 	<%= link_to '<button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>'.html_safe, new_product_price_path(@product) %>
-
 	<br><br>
-
 	<% if !@product.prices.empty? %>
-
 		<div class="row">
 			<div class="col-lg-12">
 			  <table class="table table-hover">
@@ -19,7 +15,6 @@
 			        <th class="col-lg-1"></th>
 			      </tr>
 			    </thead>
-
 			    <tbody>
 			      <% @product.prices.each do |price| %>
 			        <tr>
@@ -34,11 +29,7 @@
 			  </table>
 			</div>
 		</div>
-
 	<% else %>
-
 		<div class="alert alert-danger g-margin-b-0" role="alert">Este producto aun no tiene precio...</div>
-
 	<% end %>
-
 </div>

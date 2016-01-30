@@ -10,22 +10,15 @@
       <div class="col-lg-8">
         <div class="input-group">
           <span class="input-group-btn">
-
             <%= button_tag(type: 'submit', class: "btn btn-default") do %>
               Buscar
             <% end %>
-
           </span>
-
           <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search] %>
-        
         </div><!-- /input-group -->
       </div><!-- /.col-lg-8 -->
-
       <div class="col-lg-4">
-
         <%= select_tag(:ordering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"], ['Correo A-Z', "4"], ['Correo Z-A', "5"], ['Usuario A-Z', "6"], ['Usuario Z-A', "7"] ], :selected => params[:ordering] ), {:class => 'form-control'})  %> 
-
       </div><!-- /.col-lg-4 -->
 
     <% end %>
@@ -39,10 +32,9 @@
         <th>Nombre</th>
         <th>Correo electrónico</th>
         <th>Teléfono</th>
-        <th>Usuario ML</th>
+        <th class="text-center">Usuario ML</th>
       </tr>
     </thead>
-
     <tbody>
       <% @customers.each do |customer| %>
         <tr>
@@ -50,7 +42,7 @@
           <td><%= link_to customer.name, customer %></td>
           <td><%= customer.email %></td>
           <td><%= number_to_phone(customer.phone, delimiter: " ") %></td>
-          <td><%= customer.username %></td>
+          <td class="text-center"><%= customer.username.present? ? customer.username : "-" %></td>
           <td class="text-center">
             <div class="btn-group">
               <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">

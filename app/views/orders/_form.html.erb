@@ -1,32 +1,23 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
     <%= bootstrap_flash %>
-
     <%= form_for(@order) do |f| %>
-
         <% if @order.errors.any? %>
-
-            <div id="error_explanation" class="alert alert-danger">
-                <label><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</label>
+            <div id="error_explanation" class="alert alert-danger" role="alert">
+                <label>Error:</label>
                 <ul>
                     <% @order.errors.full_messages.each do |message| %>
                         <li><%= message %></li>
                     <% end %>
                 </ul>
             </div>
-
         <% end %>
-
         <h1 class="page-header"><%= name %><%= @order.id %></h1>
         <div class="row">
             <div class="col-lg-<%= action == "new" || action == "edit" ? 6 : 12 %>">
-
                 <% if action == "new" || action == "edit" %>
                     <%= f.label "Cliente" %>
                     <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
-
                     <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
-
                 <% elsif action == "show" %>
                     <h4 class="g-bold">
                         <span>Cliente: </span>
@@ -36,20 +27,16 @@
                         <span><%= @order.created_at.strftime("%d-%m-%Y - %I:%m %p") %></span>
                     </h4>
                 <% end %>
-
             </div>
         </div>
-
         <% if action == "new" || action == "edit" %>
             <br> <!-- line break -->
             <h1 class="page-header"><small>Productos</small></h1>
             <div id="form-add-product" class="row">
                 <div class="col-lg-6">
-
                     <%= f.label "Producto" %>
                     <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
                     <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
-
                 </div>
                 <div class="col-lg-6"></div><!-- /.col-lg-6-->
             </div>
@@ -61,9 +48,7 @@
             <h1 class="page-header"><small>Productos</small></h1>
             <div id="empty_orden_alert" class="alert alert-warning g-margin-b-0 <%= action == "edit" ? "g-display-none" : "" %>" role="alert">La orden esta vacia! Debes agregar algun producto...</div>
         <% end %>
-
         <br> <!-- line break -->
-
         <table id="order_table" class="table table-hover <%= action == "new" ? "hidden" : "" %>">
             <thead>
               <tr>
@@ -79,13 +64,9 @@
               </tr>
             </thead>
             <tbody id="order_detail">
-
                 <% if action == "show" || action == "edit" %>
-
                     <% @order_details.each_with_index do |order_detail,i| %>
-
                         <% i = i + 1 %>
-
                         <tr id="row_<%= order_detail.product_detail_id %>">
                             <td>
                                 <span><%= i %></span>
@@ -110,8 +91,6 @@
                                 <% end %>
                                 <input id="comission_<%= order_detail.product_detail_id %>_input" class="hidden" value="<%= order_detail.comission %>" name="order[order_detail][][comission]">
                             </td>
-
-
                             <td class="text-center">
                                 <span><%= order_detail.product_detail.comment.present? ? order_detail.product_detail.comment : '-' %></span>
                             </td>
@@ -120,13 +99,9 @@
                                     <button type="button" onclick="remove_row(<%= order_detail.product_id %>,'<%= order_detail.product.name %>',<%= order_detail.product_detail_id %>,'<%= order_detail.product_detail.serial %>','<%= order_detail.product_detail.comment %>')" id="btn_remove_<%= order_detail.product_detail_id %>" class="btn btn-danger btn-xs"> <i class="fa fa-times"></i> Remover </button>
                                 </td>
                             <% end %>
-
                         </tr>
-
                     <% end %>
-
                 <% end %>
-
             </tbody>
         </table>
         <br> <!-- line break -->
@@ -167,7 +142,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <%= button_tag(type: 'submit', id: "process_order" , class: "btn btn-success width-100 g-display-none") do %>
                     <i class="fa fa-shopping-cart"></i> Procesar orden
                 <% end %>
@@ -179,9 +153,7 @@
                         <i class="fa fa-floppy-o"></i> Actualizar orden
                     <% end %>
                 <% end %>
-
             </div>
         </div>
     <% end %>
-
 </div>

@@ -1,4 +1,6 @@
 class Product < ActiveRecord::Base
+    validates :name, presence: true
+
 	has_many :product_details, :dependent => :destroy
 	has_many :prices, :dependent => :destroy
     has_many :order_details, :dependent => :destroy

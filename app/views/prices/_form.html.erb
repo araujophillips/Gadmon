@@ -1,45 +1,33 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-  <%= form_for([@product, @price]) do |f| %>
-
-    <% if @price.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@price.errors.count, "error") %> prohibited this price from being saved:</h2>
-
-      <ul>
-        <% @price.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+    <%= form_for([@product, @price]) do |f| %>
+        <% if @price.errors.any? %>
+            <div id="error_explanation" class="alert alert-danger" role="alert">
+                <label>Error:</label>
+                <ul>
+                    <% @price.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
         <% end %>
-      </ul>
-    </div>
+        <h1 class="page-header">Agregar precio</h1>
+        <div class="row">
+            <div class="col-lg-6">
+                <%= f.label "Nuevo precio" %>
+                <%= f.text_field :price, :onkeypress => "return just_numbers(event)", class: "form-control", :required => true  %>
+            </div>
+            <div class="col-lg-6">
+                <%= f.label "Comentario" %>
+                <%= f.text_area :comment, class: "form-control", :rows => 1  %>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-5">
+                <%= button_tag(type: 'submit', class: "btn btn-success") do %>
+                    <i class="fa fa-plus"></i> Agregar
+                <% end %>
+            </div>
+        </div>
     <% end %>
-
-    <h1 class="page-header">Agregar precio</h1>
-
-    <div class="row">
-      <div class="col-lg-6">
-
-        <%= f.label "Nuevo precio" %>
-        <%= f.text_field :price, class: "form-control", :required => true  %>
-
-      </div>
-      <div class="col-lg-6">
-
-        <%= f.label "Comentario" %>
-        <%= f.text_area :comment, class: "form-control", :rows => 1  %>
-
-      </div>
-    </div>
-    <br>
-    <div class="row">
-      <div class="col-lg-5">
-
-        <%= button_tag(type: 'submit', class: "btn btn-success") do %>
-          <i class="fa fa-plus"></i> Agregar
-
-        <% end %>
-
-      </div>
-    </div>
-
-  <% end %>
 </div>

@@ -23,7 +23,6 @@ class ProductsController < ApplicationController
   def show
     @price = Price.new
     @product_detail = ProductDetail.new
-    @product = Product.find(params[:id])
   end
 
   # GET /products/new
@@ -40,10 +39,9 @@ class ProductsController < ApplicationController
   # POST /products.json
   def create
     @product = Product.new(product_params)
-
     respond_to do |format|
       if @product.save
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
+        format.html { redirect_to @product, notice: 'Producto creado exitosamente.' }
       else
         format.html { render :new }
       end
@@ -55,6 +53,7 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update(product_params)
+        format.html { redirect_to @product, notice: 'Producto editado exitosamente.' }
       else
         format.html { render :edit }
       end
@@ -66,7 +65,7 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
+      format.html { redirect_to products_url, notice: 'Producto eliminado exitosamente.' }
     end
   end
 

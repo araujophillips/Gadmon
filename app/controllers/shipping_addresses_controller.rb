@@ -30,7 +30,7 @@ class ShippingAddressesController < ApplicationController
 
     respond_to do |format|
       if @shipping_address.save
-        format.html { redirect_to @shipping_address.customer, notice: 'Shipping address was successfully created.' }
+        format.html { redirect_to @shipping_address.customer, notice: 'Direccion de envio creada exitosamente.' }
       else
         format.html { render :new }
       end
@@ -42,7 +42,7 @@ class ShippingAddressesController < ApplicationController
   def update
     respond_to do |format|
       if @shipping_address.update(shipping_address_params)
-        format.html { redirect_to @shipping_address.customer, notice: 'Shipping address was successfully updated.' }
+        format.html { redirect_to @shipping_address.customer, notice: 'Direccion de envio actualizada exitosamente.' }
       else
         format.html { render :edit }
       end
@@ -54,23 +54,19 @@ class ShippingAddressesController < ApplicationController
   def destroy
     @shipping_address.destroy
     respond_to do |format|
-      format.html { redirect_to shipping_addresses_url, notice: 'Shipping address was successfully destroyed.' }
+      format.html { redirect_to shipping_addresses_url, notice: 'Direccion de envio eliminada exitosamente.' }
     end
   end
 
   private
-
-    # Find the parent resource (Customer) by the id sent as param (/customer/:customer_id/shipping_address)
     def set_customer
       @customer = Customer.find(params[:customer_id])
     end
 
-    # Use callbacks to share common setup or constraints between actions.
     def set_shipping_address
       @shipping_address = ShippingAddress.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def shipping_address_params
       params.require(:shipping_address).permit(:customer_id, :office, :company, :address, :municipality, :city, :state, :comment)
     end

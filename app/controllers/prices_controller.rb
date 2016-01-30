@@ -27,7 +27,6 @@ class PricesController < ApplicationController
   def create
     @price = Price.new(price_params)
     @price.product = @product
-
     respond_to do |format|
       if @price.save
         format.html { redirect_to @price.product, notice: 'Price was successfully created.' }
@@ -59,18 +58,14 @@ class PricesController < ApplicationController
   end
 
   private
-
-    # Find the parent resource (Product) by the id sent as param (/products/:product_id/price)
     def set_product
       @product = Product.find(params[:product_id])
     end
 
-    # Use callbacks to share common setup or constraints between actions.
     def set_price
       @price = Price.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def price_params
       params.require(:price).permit(:product_id, :price)
     end

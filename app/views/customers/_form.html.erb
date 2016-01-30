@@ -1,74 +1,52 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
     <%= bootstrap_flash %>
-
     <%= form_for(@customer) do |f| %>
-
         <% if @customer.errors.any? %>
-
-            <div id="error_explanation" class="alert alert-danger">
-                <label><%= pluralize(@customer.errors.count, "error") %> prohibited this customer from being saved:</label>
+            <div id="error_explanation" class="alert alert-danger" role="alert">
+                <label>Error:</label>
                 <ul>
                     <% @customer.errors.full_messages.each do |message| %>
                         <li><%= message %></li>
                     <% end %>
                 </ul>
             </div>
-
         <% end %>
-
         <h1 class="page-header"><%= name %><%= @customer.id %></h1>
         <div class="row">
             <div class="col-lg-5">
-
                 <%= f.label "Nombre" %>
                 <%= f.text_field :name, class: "form-control", value: @customer.name, :required => true, readonly: readonly  %>
-
             </div>
             <div class="col-lg-5">
-
                 <%= f.label "Correo electrónico" %>
                 <%= f.text_field :email, type: "email", class: "form-control", value: @customer.email, :required => true, readonly: readonly %>
-
             </div>
-
             <% if action == "show" %>
-
                 <div class="col-lg-2">
                     <label class="col-padding"></label>
-
                     <!-- Send email button -->
                     <% mail_content = capture do %> <button type="button" class="btn btn-default"><i class="fa fa-envelope"></i> Email</button> <% end %>
                     <%= mail_to @customer.email, mail_content %>
-
                 </div><!-- /.col-lg-2 -->
-
             <% end %>
-
         </div>
         <br> <!-- line break -->
         <div class="row">
             <div class="col-lg-5">
-
                 <%= f.label "Usuario MercadoLibre" %><br>
-                <%= f.text_field :username, class: "form-control", value: @customer.username, readonly: readonly  %>
-
+                <%= f.text_field :username, class: "form-control", value: @customer.username, readonly: readonly, placeholder: "Opcional"  %>
             </div>
             <div class="col-lg-5">
-
                 <%= f.label "Teléfono" %><br>
                 <%= f.text_field :phone, class: "form-control", value: (action != "edit"  ? number_to_phone(@customer.phone, delimiter: ' ') : @customer.phone), :required => true, readonly: readonly  %>
-
             </div>
             <div class="col-lg-2"></div><!-- /.col-lg-2 -->
         </div>
         <br> <!-- line break -->
         <div class="row">
             <div class="col-lg-5">
-
                 <%= f.label "Comentario" %><br>
                 <%= f.text_area :comment, class: "form-control", value: @customer.comment, readonly: readonly  %>
-
             </div>
             <div class="col-lg-7"></div><!-- /.col-lg-7 -->
         </div>
@@ -76,7 +54,6 @@
         <div class="row">
             <div class="col-lg-5">
                 <div class="actions">
-
                     <% if action == "show" %>
                         <%= link_to '<button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Editar</button>'.html_safe, edit_customer_path(@customer) %>
                     <% else  %>
@@ -88,11 +65,8 @@
                             <i class="fa fa-floppy-o"></i> Guardar
                         <% end %>
                     <% end %>
-
                 </div>
             </div>
         </div>
-
     <% end %>
-
 </div>

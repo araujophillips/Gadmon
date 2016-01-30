@@ -7,7 +7,7 @@ class OrdersController < ApplicationController
   # GET /orders/update_quantity
   def update_quantity
     @product = Product.by_id(params[:product_id])
-    response = @product.to_json( { :include => [ :current_price ], :methods => [ :product_details_availables ]  } )
+    response = @product.to_json( { :include => [ :current_price ], :methods => [ :product_details_availables ] } )
     respond_to do |format|
       format.json { render :json => response}
     end
@@ -37,7 +37,6 @@ class OrdersController < ApplicationController
   # POST /orders
   # POST /orders.json
   def create
-    # Creates the order removing the order details from the hash
     @order = Order.create(order_params.except!(:order_detail))
     OrderDetail.process_order_details(@order,order_params[:order_detail])
     respond_to do |format|
@@ -75,8 +74,6 @@ class OrdersController < ApplicationController
   end
 
   private
-
-    # Use callbacks to share common setup or constraints between actions.
     def set_order
       @order = Order.find(params[:id])
     end
@@ -94,9 +91,7 @@ class OrdersController < ApplicationController
       @product_details = ProductDetail.all
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def order_params
       params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
     end
-
 end

@@ -1,11 +1,6 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
 # Customers search
 $("#order_customer_search").click ->
   size = $("#order_customer_id option").size()
-  console.log(size)
   unless size is $("#order_customer_id").prop("size")
     $("#order_customer_id").prop "size", size
   else
@@ -28,7 +23,6 @@ $ ->
 # Products search
 $("#order_product_search").click ->
   size = $("#product_list option").size()
-  console.log(size)
   unless size is $("#product_list").prop("size")
     $("#product_list").prop "size", size
   else
@@ -108,6 +102,7 @@ $(document).on 'change', '#product_list', (evt,data) ->
 
 root = exports ? this
 
+# Add the selected serial to an order
 root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comment) ->
   $("#btn_add_"+detail_id).hide()
   $("#order_table").removeClass("hidden")
@@ -148,6 +143,7 @@ root.add_row = (product_id,product_name,price_id,price_val,detail_id,serial,comm
     ')
   calculate()
 
+# Remove the selected serial from the order
 root.remove_row = (product_id,product_name,id,serial,comment) ->
   $("#btn_add_"+id).show()
   $("#btn_add_"+id).removeClass('hidden')
@@ -161,6 +157,7 @@ root.remove_row = (product_id,product_name,id,serial,comment) ->
     $("#empty_orden_alert").show()
   calculate()
 
+# Return the product to the dropdown
 root.add_to_dropdown = (id,name)  ->
   exists = false
   $('#product_list option').each ->
@@ -170,6 +167,7 @@ root.add_to_dropdown = (id,name)  ->
     $("#product_list").append('<option value="'+id+'">'+name+'</option>')
   return
 
+# Calculates subtotal, comission, tax and total
 root.calculate = (row) ->
   # Calculate comissions
   comission_percent = $("#comission_"+row).html()
@@ -205,6 +203,7 @@ root.calculate = (row) ->
   $("#order_tax").val(tax)
   $("#order_total").val(total)
 
+# Disable non numbers from the keyboard
 root.just_numbers = (e) ->
   keynum = if window.event then window.event.keyCode else e.which
   if keynum == 8 or keynum == 46
