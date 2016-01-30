@@ -1,12 +1,8 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">Direcciones de envio</h1>
-	
 	<%= link_to '<button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>'.html_safe, new_customer_shipping_address_path(@customer) %>
-
 	<br><br> <!-- line break -->
-
   <% if !@customer.shipping_addresses.empty? %>
-
     <table class="table table-hover">
       <thead>
         <tr>
@@ -17,7 +13,6 @@
           <th>Tipo</th>
         </tr>
       </thead>
-
       <tbody>
         <% @customer.shipping_addresses.each do |shipping_address| %>
           <tr>
@@ -39,17 +34,12 @@
                 </ul>
               </div>
             </td>
-            
           </tr>
         <% end %>
       </tbody>
     </table>
-
   <% else %>
-
     <div class="alert alert-warning g-margin-b-0" role="alert">Este cliente aun no tiene direcciones...</div>
-
   <% end %>
-
   <br><br> <!-- line break -->
 </div>
