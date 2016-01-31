@@ -66,11 +66,11 @@ class OrdersController < ApplicationController
   def update
     @order = Order.find(params[:id])
     respond_to do |format|
-      if @order.update_attributes(order_params.except!(:order_detail))
+      if @order.update_attributes(order_params.except!(:order_status_detail,:order_detail))
         if order_params[:order_detail].present?
           OrderDetail.process_order_details(@order,order_params[:order_detail])
         end
-        OrderStatusDetail.change_order_status(@order)
+        OrderStatusDetail.change_order_status(@order, order_params[:order_status_detail])
         format.html { redirect_to @order, notice: 'Orden actualizada exitosamente.' }
       else
         format.html { render :edit }
@@ -110,6 +110,6 @@ class OrdersController < ApplicationController
     end
 
     def order_params
-      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
+      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, :order_status_detail, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
     end
 end
