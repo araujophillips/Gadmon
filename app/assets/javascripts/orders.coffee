@@ -148,24 +148,12 @@ root.remove_row = (product_id,product_name,id,serial,comment) ->
   $("#btn_add_"+id).show()
   $("#btn_add_"+id).removeClass('hidden')
   $("#order_detail #row_"+id).remove()
-  # Add the product to dropdown if not exists
-  add_to_dropdown(product_id,product_name)
   if $("tbody#order_detail").children().length == 0
     $("#order_table").hide()
     $("#process_order").hide()
     $("#update_order").hide()
     $("#empty_orden_alert").show()
   calculate()
-
-# Return the product to the dropdown
-root.add_to_dropdown = (id,name)  ->
-  exists = false
-  $('#product_list option').each ->
-    if @value == id
-      exists = true
-  if exists == false
-    $("#product_list").append('<option value="'+id+'">'+name+'</option>')
-  return
 
 # Calculates subtotal, comission, tax and total
 root.calculate = (row) ->
