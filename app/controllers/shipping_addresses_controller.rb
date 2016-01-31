@@ -54,7 +54,7 @@ class ShippingAddressesController < ApplicationController
   def destroy
     @shipping_address.destroy
     respond_to do |format|
-      format.html { redirect_to shipping_addresses_url, notice: 'Direccion de envio eliminada exitosamente.' }
+      format.html { redirect_to @customer, notice: 'Direccion de envio eliminada exitosamente.' }
     end
   end
 
