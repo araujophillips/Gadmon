@@ -2,7 +2,9 @@
     <%= render 'sidebar' %>
 <% end %>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-    <%= bootstrap_flash %>
+    <% if action != 'show' %>
+        <%= bootstrap_flash %>
+    <% end %>
     <h1 class="page-header">Ordenes</h1>
     <div class="row">
     <%= form_tag(orders_path, :method => "get", id: "customers-search-form", role: "search") do %>
