@@ -20,7 +20,7 @@ class CustomersController < ApplicationController
   # GET /customers/1
   # GET /customers/1.json
   def show
-    @orders = Order.by_customer_id(params[:id])
+    @orders = Order.with_current_status().by_customer_id(params[:id])
     @shippind_address = ShippingAddress.new
   end
 

@@ -6,10 +6,12 @@ class Order < ActiveRecord::Base
 
 	belongs_to :customer, foreign_key: :customer_id
 	has_many :order_details, :dependent => :destroy
+	has_many :order_status_details, :dependent => :destroy
+
     accepts_nested_attributes_for :order_details
 
 	def self.search(query)
-		where('id = ? OR invoice = ?', query, query)
+		where('orders.id = ? OR orders.invoice = ?', query, query)
 	end
 
     def self.by_id(id)
@@ -17,6 +19,13 @@ class Order < ActiveRecord::Base
     end
 
 	def self.by_customer_id(customer_id)
-		where("customer_id = ?", customer_id).order('id DESC')
+		where("customer_id = ?", customer_id)
 	end
+
+    def self.with_current_status()
+    	joins(order_status_details: :order_status)
+    	.order('id DESC, order_status_details.created_at DESC')
+    	.where('order_status_details.id IN (SELECT MAX(id) FROM order_status_details GROUP BY order_id)')
+    	.select("orders.*, order_status_details.status_id, order_statuses.name, order_statuses.paid, order_status_details.created_at")
+    end
 end

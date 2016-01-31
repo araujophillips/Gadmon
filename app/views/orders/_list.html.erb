@@ -31,6 +31,7 @@
                 <tr>
                     <th>#</th>
                     <th>Cliente</th>
+                    <th></th>
                     <th class="text-center">Fecha</th>
                     <th>Subtotal</th>
                     <th>Comisiones</th>
@@ -44,6 +45,7 @@
                     <tr>
                         <td><%= link_to order.id, order_path(order.id) %></td>
                         <td><%= link_to order.customer.name, customer_path(order.customer_id) %></td>
+                        <td class="text-center"><span class="label <%= order.paid == 1 ? 'label-success' : 'label-warning' %>"><%= order.name %></span></td>
                         <td class="text-center"><%= order.created_at.strftime("%d-%m-%Y - %I:%m %p") %></td>
                         <td><%= number_to_currency(order.subtotal, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
                         <td><%= number_to_currency(order.comission, unit: "Bs. ", separator: ",", delimiter: ".") %></td>

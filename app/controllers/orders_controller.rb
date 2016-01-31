@@ -3,6 +3,7 @@ class OrdersController < ApplicationController
   before_action :set_order_details, only: [:edit, :show]
   before_action :set_products, only: [:edit, :show, :new]
   before_action :set_order, only: [:edit, :show, :destroy]
+  before_action :set_order_status_details, only: [:edit, :show]
 
   # Params for ordering dropdown
   ORDERS = [ "id DESC", "id ASC" ]
@@ -26,7 +27,7 @@ class OrdersController < ApplicationController
     if params[:ordering] && ordering = ORDERS[params[:ordering].to_i]
       scope = scope.order(ordering)
     end
-    @orders = scope.all.order('id DESC')
+    @orders = scope.with_current_status()
   end
 
   # GET /orders/1
@@ -42,12 +43,14 @@ class OrdersController < ApplicationController
 
   # GET /orders/1/edit
   def edit
+    @order_statuses = OrderStatus.all.order('id ASC')
   end
 
   # POST /orders
   # POST /orders.json
   def create
     @order = Order.create(order_params.except!(:order_detail))
+    @order_status_detail = OrderStatusDetail.create(:status_id => 1, :order_id => @order.id)
     OrderDetail.process_order_details(@order,order_params[:order_detail])
     respond_to do |format|
       if @order.save
@@ -67,6 +70,7 @@ class OrdersController < ApplicationController
         if order_params[:order_detail].present?
           OrderDetail.process_order_details(@order,order_params[:order_detail])
         end
+        OrderStatusDetail.change_order_status(@order)
         format.html { redirect_to @order, notice: 'Orden actualizada exitosamente.' }
       else
         format.html { render :edit }
@@ -99,6 +103,10 @@ class OrdersController < ApplicationController
     def set_products
       @products = Product.only_with_stock.order('name ASC')
       @product_details = ProductDetail.all
+    end
+
+    def set_order_status_details
+      @order_status_details = OrderStatusDetail.where('order_id = ?', @order.id)
     end
 
     def order_params

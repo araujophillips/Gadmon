@@ -18,13 +18,20 @@
                     <%= f.label "Cliente" %>
                     <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
                     <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
+                    <% if action == "edit" %>
+                        <br> <!-- line break -->
+                        <%= f.label "Estados" %>
+                        <%= select_tag "order[order_status_detail]", options_from_collection_for_select(@order_statuses, "id", "name", :selected => @order_status_details.last.status_id), :required => true, :class => 'form-control radius-bottom' %>
+                    <% end %>
                 <% elsif action == "show" %>
                     <h4 class="g-bold">
                         <span>Cliente: </span>
-                        <span><%= @customer.name %></span>
+                        <%= link_to @customer.name, customer_path(@customer.id) %>
                         &nbsp;|&nbsp;
                         <span>Fecha: </span>
                         <span><%= @order.created_at.strftime("%d-%m-%Y - %I:%m %p") %></span>
+                        &nbsp;|&nbsp;
+                        <span class="label label-lg <%= @order_status_details.last.order_status.paid == true ? 'label-success' : 'label-warning' %>"><%= @order_status_details.last.order_status.name %></span>
                     </h4>
                 <% end %>
             </div>
@@ -155,5 +162,38 @@
                 <% end %>
             </div>
         </div>
+        <br> <!-- line break -->
+        <% if action == "show" %>
+            <h1 class="page-header">Historial</h1>
+            <table id="status_details" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Fecha</th>
+                    <th class="text-center">Comentario</th>
+                  </tr>
+                </thead>
+                <tbody id="order_detail">
+                    <% @order_status_details.each_with_index do |order_status_detail,i| %>
+                        <% i = i + 1 %>
+                        <tr>
+                            <td>
+                                <span><%= i %></span>
+                            </td>
+                            <td class="text-center">
+                                <span class="label <%= order_status_detail.order_status.paid == true ? 'label-success' : 'label-warning' %>"><%= order_status_detail.order_status.name %></span>
+                            </td>
+                            <td class="text-center">
+                                <span><%= order_status_detail.created_at.strftime("%d-%m-%Y - %I:%m %p") %></span>
+                            </td>
+                            <td class="text-center">
+                                <span>-</span>
+                            </td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        <% end %>
     <% end %>
 </div>
