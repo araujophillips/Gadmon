@@ -16,12 +16,15 @@
             <div class="col-lg-<%= action == "new" || action == "edit" ? 6 : 12 %>">
                 <% if action == "new" || action == "edit" %>
                     <%= f.label "Cliente" %>
-                    <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
+                    <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly, :autocomplete => :off  %>
                     <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
                     <% if action == "edit" %>
                         <br> <!-- line break -->
                         <%= f.label "Estados" %>
                         <%= select_tag "order[order_status_detail]", options_from_collection_for_select(@order_statuses, "id", "name", :selected => @order_status_details.last.status_id), :required => true, :class => 'form-control radius-bottom' %>
+                        <br> <!-- line break -->
+                        <%= f.label "Dirección de envio" %>
+                        <%= select_tag "order[shipping_id]", options_from_collection_for_select(@shipping_addresses, "id", :full_address, :selected => @order.shipping_id), :include_blank => 'Seleccionar dirección', :required => true, :class => 'form-control radius-bottom' %>
                     <% end %>
                 <% elsif action == "show" %>
                     <h4 class="g-bold">
@@ -42,7 +45,7 @@
             <div id="form-add-product" class="row">
                 <div class="col-lg-6">
                     <%= f.label "Producto" %>
-                    <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly  %>
+                    <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly, :autocomplete => :off  %>
                     <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
                 </div>
                 <div class="col-lg-6"></div><!-- /.col-lg-6-->

@@ -4,4 +4,9 @@ class ShippingAddress < ActiveRecord::Base
 	validates :city, presence: true
 	
 	belongs_to :customer, foreign_key: :customer_id
+
+	def full_address
+	   "#{address}, #{city}, #{state}"
+	end
+
 end
