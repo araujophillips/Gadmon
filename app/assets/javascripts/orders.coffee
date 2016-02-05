@@ -1,46 +1,12 @@
 # Customers search
-$("#order_customer_search").click ->
-  size = $("#order_customer_id option").size()
-  unless size is $("#order_customer_id").prop("size")
-    $("#order_customer_id").prop "size", size
-  else
-    $("#order_customer_id").prop "size", 1
-
 $("#order_customer_id").change ->
   customer = $(this).find("option:selected").text()
   $("#order_customer_search").val customer
 
-$ ->
-  opts = $("#order_customer_id option").map(->
-    [ [ @value, $(this).text() ] ]
-  )
-  $("#order_customer_search").keyup ->
-    rxp = new RegExp($("#order_customer_search").val(), "i")
-    optlist = $("#order_customer_id").empty()
-    opts.each ->
-      optlist.append $("<option/>").attr("value", this[0]).text(this[1])  if rxp.test(this[1])
-
 # Products search
-$("#order_product_search").click ->
-  size = $("#product_list option").size()
-  unless size is $("#product_list").prop("size")
-    $("#product_list").prop "size", size
-  else
-    $("#product_list").prop "size", 1
-
 $("#product_list").change ->
   customer = $(this).find("option:selected").text()
   $("#order_product_search").val customer
-
-$ ->
-  opts = $("#product_list option").map(->
-    [ [ @value, $(this).text() ] ]
-  )
-  $("#order_product_search").keyup ->
-    rxp = new RegExp($("#order_product_search").val(), "i")
-    optlist = $("#product_list").empty()
-    opts.each ->
-      optlist.append $("<option/>").attr("value", this[0]).text(this[1])  if rxp.test(this[1])
 
 $("#btn-add-product").click ->
   btn = $("#btn-add-product")

@@ -16,8 +16,7 @@
             <div class="col-lg-<%= action == "new" || action == "edit" ? 6 : 12 %>">
                 <% if action == "new" || action == "edit" %>
                     <%= f.label "Cliente" %>
-                    <%= f.text_field :customer_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly, :autocomplete => :off  %>
-                    <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control radius-bottom' %>
+                    <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control' %>
                     <% if action == "edit" %>
                         <br> <!-- line break -->
                         <%= f.label "Estados" %>
@@ -45,8 +44,7 @@
             <div id="form-add-product" class="row">
                 <div class="col-lg-6">
                     <%= f.label "Producto" %>
-                    <%= f.text_field :product_search, class: "form-control radius-top", value: '', placeholder: 'Buscar...', readonly: readonly, :autocomplete => :off  %>
-                    <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control radius-bottom' %>
+                    <%= select_tag "product_list", options_from_collection_for_select(@products, "id", "name"), :include_blank => 'Seleccionar producto', :class => 'form-control' %>
                 </div>
                 <div class="col-lg-6"></div><!-- /.col-lg-6-->
             </div>
