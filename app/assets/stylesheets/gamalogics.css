@@ -75,3 +75,5 @@
 ul.no-bullet{ list-style-type: none; padding-left: 15px; margin-bottom: 0px; }
 ul.no-bullet li{ padding-bottom: 5px; }
 ul.list-5 { width: 45%; display: inline-block; }
+
+.btn-file { margin-top: 5px; }

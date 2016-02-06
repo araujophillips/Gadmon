@@ -17,13 +17,17 @@
                 <% if action == "new" || action == "edit" %>
                     <%= f.label "Cliente" %>
                     <%= select_tag "order[customer_id]", options_from_collection_for_select(@customers, "id", "name", :selected => @order.customer_id), :include_blank => 'Seleccionar cliente', :required => true, :class => 'form-control' %>
+                    <br> <!-- line break -->
+                    <%= f.label "Factura" %>
+                    <%= f.text_field :invoice, :onkeypress => "return just_numbers(event)", class: "form-control", value: @order.invoice %>
+                    <%= f.file_field :invoice_image, class: "btn-file" %>
                     <% if action == "edit" %>
                         <br> <!-- line break -->
                         <%= f.label "Estados" %>
-                        <%= select_tag "order[order_status_detail]", options_from_collection_for_select(@order_statuses, "id", "name", :selected => @order_status_details.last.status_id), :required => true, :class => 'form-control radius-bottom' %>
+                        <%= select_tag "order[order_status_detail]", options_from_collection_for_select(@order_statuses, "id", "name", :selected => @order_status_details.last.status_id), :required => true, :class => 'form-control' %>
                         <br> <!-- line break -->
                         <%= f.label "Dirección de envio" %>
-                        <%= select_tag "order[shipping_id]", options_from_collection_for_select(@shipping_addresses, "id", :full_address, :selected => @order.shipping_id), :include_blank => 'Seleccionar dirección', :required => true, :class => 'form-control radius-bottom' %>
+                        <%= select_tag "order[shipping_id]", options_from_collection_for_select(@shipping_addresses, "id", :full_address, :selected => @order.shipping_id), :include_blank => 'Seleccionar dirección', :class => 'form-control' %>
                     <% end %>
                 <% elsif action == "show" %>
                     <h4 class="g-bold">
@@ -156,6 +160,12 @@
 
                 <% if action == "show" %>
                     <%= link_to '<button type="button" class="btn btn-default width-100"><i class="fa fa-pencil"></i> Editar order</button>'.html_safe, edit_order_path(@order) %>
+                    <% if @order.invoice.present? %>
+                        <br>
+                        <a href="#" id="pop">  
+                            <button type="button" class="btn btn-success width-100" style="margin-top: 5px;"><i class="fa fa-paperclip"></i>Ver factura #<%= @order.invoice %></button>
+                        </a>
+                    <% end %>
                 <% elsif action == "edit" %>
                     <%= button_tag(type: 'submit', id: "update_order" , class: "btn btn-success width-100") do %>
                         <i class="fa fa-floppy-o"></i> Actualizar orden
@@ -198,3 +208,29 @@
         <% end %>
     <% end %>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Factura #<%= @order.invoice %></h4>
+      </div>
+      <div class="modal-body">
+        <%= image_tag @order.invoice_image.url(:thumb) %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$("#pop").on("click", function() {
+   $('#imagepreview').attr('src', $('#imageresource').attr('src'));
+   $('#imagemodal').modal('show');
+   
+});
+</script>

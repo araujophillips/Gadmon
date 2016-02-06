@@ -112,6 +112,6 @@ class OrdersController < ApplicationController
     end
 
     def order_params
-      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :shipping_id, :order_status_detail, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
+      params.require(:order).permit(:customer_id, :subtotal, :tax, :comission, :total, :invoice, :invoice_image, :shipping_id, :order_status_detail, order_detail: [:product_id, :product_detail_id, :price_id, :comission])
     end
 end

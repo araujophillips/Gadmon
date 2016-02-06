@@ -8,6 +8,9 @@ class Order < ActiveRecord::Base
 	has_many :order_details, :dependent => :destroy
 	has_many :order_status_details, :dependent => :destroy
 
+	has_attached_file :invoice_image, styles: { thumb: "570x400" }, :default_url => 'no-invoice.png'
+	validates_attachment_content_type :invoice_image, content_type: /^image\/(jpg|jpeg|png)$/, :message => 'Por favor, utilice facturas en formato png, jpg o jpeg.'
+
     accepts_nested_attributes_for :order_details
 
 	def self.search(query)
