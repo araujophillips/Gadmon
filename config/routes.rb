@@ -14,6 +14,10 @@ Rails.application.routes.draw do
     resources :shipping_addresses
   end
 
+  resources :providers do
+    resources :provider_types
+  end
+
   resources :products do
     collection do
       get 'current_price'
