@@ -10,7 +10,7 @@
                 </ul>
             </div>
         <% end %>
-        <h1 class="page-header"><%= action == 'edit' ? 'Editar artículo #'+@product_detail.id.to_s : 'Agregar inventario' %></h1>
+        <h1 class="page-header"><%= name %><%= action == 'edit' ? @product_detail.id.to_s : '' %></h1>
         <div class="row">
             <div class="col-lg-6">
                 <%= f.label "Serial" %>
