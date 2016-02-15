@@ -178,9 +178,80 @@
 </div>
 
 <script>
+
 $("#pop").on("click", function() {
    $('#imagepreview').attr('src', $('#imageresource').attr('src'));
    $('#imagemodal').modal('show');
    
 });
+
+var add_row, calculate, remove_row, root;
+
+$("#show-add-detail-form-btn").click(function() {
+  $("#add-detail-form-btn").show();
+  return $("#show-add-detail-form-btn").parent().parent().hide();
+});
+
+$("#hide-add-detail-btn").click(function() {
+  $("#add-detail-form-btn").hide();
+  return $("#show-add-detail-form-btn").parent().parent().show();
+});
+
+root = typeof exports !== "undefined" && exports !== null ? exports : this;
+
+calculate = function() {
+  var iva, subtotal, tax, total;
+  subtotal = 0;
+  $("#purchase_detail .price").each(function() {
+    var i;
+    i = parseFloat($(this).text());
+    return subtotal += i;
+  });
+  iva = $("#iva").val();
+  tax = subtotal * iva;
+  total = subtotal - tax;
+  $("#subtotal").text(subtotal);
+  $("#tax").text(tax);
+  $("#total").text(total);
+  $("#purchase_subtotal").val(subtotal);
+  $("#purchase_tax").val(tax);
+  return $("#purchase_total").val(total);
+};
+
+function add_row() {
+  var line, line_tag, name, price;
+  name = $('#line_name').val();
+  price = $('#line_price').val();
+  line_tag = $("#purchase_detail #line_id_val");
+  line = 1;
+  line_tag.each(function() {
+    return line = line + 1;
+  });
+  if ($("#empty_purchase_alert").is(':visible')) {
+    $("#empty_purchase_alert").hide();
+  }
+  if ($("#purchase_table").hasClass('hidden')) {
+    $("#purchase_table").removeClass('hidden');
+  }
+  if ($("#process_purchase").is(':hidden')) {
+    $("#process_purchase").show();
+  }
+  $("#add-detail-form-btn").hide();
+  $("#show-add-detail-form-btn").parent().parent().show();
+  $('#line_name').val('');
+  $('#line_price').val('');
+  $("#purchase_table #purchase_detail").append('<tr id="row_' + line + '"> <td> <span id="line_id_val">' + line + '</span> <input class="hidden" value="' + line + '" name="purchase[purchase_detail][][line]"> </td> <td> <span id="line_name_val">' + name + '</span> <input class="hidden" value="' + name + '" name="purchase[purchase_detail][][name]"> </td> <td> Bs. <span id="line_price_val" class="price">' + price + '</span> <input class="hidden" value="' + price + '" name="purchase[purchase_detail][][price]"> </td> <td class="text-center"> <button type="button" onclick="remove_row(' + line + ')" id="btn_remove_' + line + '" class="btn btn-danger btn-xs"> <i class="fa fa-times"></i> Remover</span> </button></td> </td> </tr>');
+  return calculate();
+};
+
+remove_row = function(line) {
+  $('#row_' + line).remove();
+  if ($("tbody#purchase_detail").children().length === 0) {
+    $("#purchase_table").hide();
+    $("#process_purchase").hide();
+    $("#empty_purchase_alert").show();
+  }
+  return calculate();
+};
+
 </script>
