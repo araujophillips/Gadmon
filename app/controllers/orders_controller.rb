@@ -65,7 +65,6 @@ class OrdersController < ApplicationController
   # PATCH/PUT /orders/1
   # PATCH/PUT /orders/1.json
   def update
-    puts params
     @order = Order.find(params[:id])
     respond_to do |format|
       if @order.update_attributes(order_params.except!(:order_status_detail,:order_detail))
