@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     resources :provider_types
   end
 
+  resources :purchases do
+    resources :purchases_details
+  end
+
   resources :products do
     collection do
       get 'current_price'

@@ -1,0 +1,184 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <%= bootstrap_flash %>
+    <%= form_for(@purchase) do |f| %>
+        <% if @purchase.errors.any? %>
+            <div id="error_explanation" class="alert alert-danger" role="alert">
+                <label>Error:</label>
+                <ul>
+                    <% @purchase.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+        <h1 class="page-header"><%= name %><%= @purchase.id %></h1>
+        <div class="row">
+            <div class="col-lg-<%= action == "new" || action == "edit" ? 6 : 12 %>">
+                <% if action == "new" || action == "edit" %>
+                    <%= f.label "Proveedor" %>
+                    <%= select_tag "purchase[provider_id]", options_from_collection_for_select(@providers, "id", "name", :selected => @purchase.provider_id), :include_blank => 'Seleccionar proveedor', :required => true, :class => 'form-control' %>
+                    <br> <!-- line break -->
+                    <%= f.label "Factura" %>
+                    <%= f.text_field :invoice, :onkeypress => "return just_numbers(event)", class: "form-control", value: @purchase.invoice,  :required => true %>
+                    <%= f.file_field :invoice_image, class: "btn-file" %>
+                <% elsif action == "show" %>
+                    <h4 class="g-bold">
+                        <span>Proveedor: </span>
+                        <%= link_to @purchase.provider.name, provider_path(@purchase.provider.id) %>
+                        &nbsp;|&nbsp;
+                        <span>Fecha: </span>
+                        <span><%= @purchase.created_at.strftime("%d-%m-%Y - %I:%m %p") %></span>
+                    </h4>
+                <% end %>
+            </div>
+        </div>
+        <% if action == "new" || action == "edit" %>
+            <br> <!-- line break -->
+            <h1 class="page-header"><small>Detalles</small></h1>
+            <div class="row">
+                <div class="col-lg-12">
+                    <button type="button" id="show-add-detail-form-btn" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>
+                </div>
+                <br> <!-- line break -->
+            </div>
+            <div id="add-detail-form-btn" class="row" style="display: none;">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <%= f.label "Nombre" %>
+                            <input id="line_name" class="form-control" value="">
+                        </div>
+                        <div class="col-lg-6">
+                            <%= f.label "Precio" %>
+                            <input id="line_price" class="form-control" value="">
+                        </div>
+                    </div>
+                    <br> <!-- line break -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button type="button" id="hide-add-detail-btn" class="btn btn-warning"><i class="fa fa-reply"></i> Ocultar</button>
+                            &nbsp;
+                            <button type="button" id="add-detail-btn" class="btn btn-success" onclick="add_row()"><i class="fa fa-plus"></i> Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br> <!-- line break -->
+            <div id="empty_purchase_alert" class="alert alert-warning g-margin-b-0 <%= action == "edit" ? "g-display-none" : "" %>" role="alert">La compra esta vacia! Debes agregar algun detalle...</div>
+        <% end %>
+        <br> <!-- line break -->
+        <table id="purchase_table" class="table table-hover <%= action == "new" ? "hidden" : "" %>">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="purchase_detail">
+                <% if action == "show" || action == "edit" %>
+                    <% @purchase_details.each_with_index do |purchase_detail,i| %>
+                        <% i = i + 1 %>
+                        <tr id="row_<%= purchase_detail.line %>">
+                            <td>
+                                <span id="line_id_val"><%= i %></span>
+                                <input class="hidden" value="<%= purchase_detail.line %>" name="purchase[purchase_detail][][line]">
+                            </td>
+                            <td>
+                                <span id="line_name_val"><%= purchase_detail.name %></span>
+                                <input class="hidden" value="<%= purchase_detail.name %>" name="purchase[purchase_detail][][name]">
+                            </td>
+                            <td>
+                                Bs. <span id="line_price_val" class="price"><%= purchase_detail.price %></span>
+                                <input class="hidden" value="<%= purchase_detail.price %>" name="purchase[purchase_detail][][price]">
+                            </td>
+                            <% if action == "edit" %>
+                                <td class="text-center">
+                                    <button type="button" onclick="remove_row(<%= purchase_detail.line %>)" id="btn_remove_<%= purchase_detail.line %>" class="btn btn-danger btn-xs"> <i class="fa fa-times"></i> Remover </button>
+                                </td>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                <% end %>
+            </tbody>
+        </table>
+        <br> <!-- line break -->
+        <div class="row">
+            <div class="col-sm-3 col-md-6 col-lg-8"></div><!-- /.col-lg-8 -->
+            <div class="col-sm-9 col-md-6 col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Resumen</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-5 no-bullet g-bold">
+                            <li>Subtotal</li>
+                            <li>IVA</li>
+                            <li>Total</li>
+                        </ul>
+                        <ul class="list-5 no-bullet">
+                            <li class="text-right">
+                                Bs. <span id="subtotal"><%= @purchase.subtotal.present? ? @purchase.subtotal : 0 %></span>
+                                <%= f.text_field :subtotal, class: "hidden", :value => ( @purchase.subtotal.present? ? @purchase.subtotal : 0 ), :required => true, readonly: readonly %>
+                            </li>
+                            <li class="text-right">
+                                Bs. <span id="tax"><%= @purchase.tax.present? ? @purchase.tax : 0 %></span>
+                                <input class="hidden" value="<%= ApplicationController::IVA %> " id="iva">
+                                <%= f.text_field :tax, class: "hidden", :value => ( @purchase.tax.present? ? @purchase.tax : 0 ), :required => true, readonly: readonly %>
+                            </li>
+
+                            <li class="text-right">
+                                Bs. <span id="total"><%= @purchase.total.present? ? @purchase.total : 0 %></span>
+                                <%= f.text_field :total, class: "hidden", :value => ( @purchase.total.present? ? @purchase.total : 0 ), :required => true, readonly: readonly %>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <% if action == "show" %>
+                    <%= link_to '<button type="button" class="btn btn-default width-100"><i class="fa fa-pencil"></i> Editar compra</button>'.html_safe, edit_purchase_path(@purchase) %>
+                    <% if @purchase.invoice.present? %>
+                        <br>
+                        <a href="#" id="pop">  
+                            <button type="button" class="btn btn-success width-100" style="margin-top: 5px;"><i class="fa fa-paperclip"></i>Ver factura #<%= @purchase.invoice %></button>
+                        </a>
+                    <% end %>
+                <% elsif action == "new" %>
+                    <%= button_tag(type: 'submit', id: "process_purchase" , class: "btn btn-success width-100 g-display-none") do %>
+                        <i class="fa fa-shopping-cart"></i> Procesar compra
+                    <% end %>
+                <% elsif action == "edit" %>
+                    <%= button_tag(type: 'submit', id: "update_purchase" , class: "btn btn-success width-100") do %>
+                        <i class="fa fa-floppy-o"></i> Actualizar compra
+                    <% end %>
+                <% end %>
+            </div>
+        </div>
+    <% end %>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Factura #<%= @purchase.invoice %></h4>
+      </div>
+      <div class="modal-body">
+        <%= image_tag @purchase.invoice_image.url(:thumb) %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$("#pop").on("click", function() {
+   $('#imagepreview').attr('src', $('#imageresource').attr('src'));
+   $('#imagemodal').modal('show');
+   
+});
+</script>
