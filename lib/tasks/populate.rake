@@ -4,7 +4,7 @@ namespace :db do
     require 'populator'
     require 'faker'
     
-    [Customer, ShippingAddress, Product, ProductDetail, Price, Provider].each(&:delete_all)
+    [Customer, ShippingAddress, Product, ProductDetail, Price, Provider, Purchase, PurchaseDetail].each(&:delete_all)
 
     
     Customer.populate 40 do |customer|
@@ -49,6 +49,23 @@ namespace :db do
       provider.address = Faker::Address.street_address+' '+Faker::Address.street_name+' '+Faker::Address.secondary_address+', '+Faker::Address.secondary_address+', '+Faker::Address.city+', '+Faker::Address.state
       provider.rif = 'J-'+Faker::Company.swedish_organisation_number
       provider.comment = Faker::Lorem.sentence(5, true)
+    end
+
+    Purchase.populate 100 do |purchase|
+      purchase.provider_id = Random.rand(1...50)
+      purchase.subtotal = Faker::Commerce.price(500...50000)
+      purchase.tax = purchase.subtotal * 0.12
+      purchase.total = purchase.subtotal + purchase.tax
+      purchase.comment = Faker::Lorem.sentence(5, true)
+      i = Random.rand(0...10)
+      line = 1
+      PurchaseDetail.populate i do |purchase_detail|
+        purchase_detail.purchase_id = purchase.id
+        purchase_detail.line = line
+        purchase_detail.name = Faker::Commerce.product_name
+        purchase_detail.price = purchase.subtotal / i
+        line = line + 1
+      end
     end
   end
 end
