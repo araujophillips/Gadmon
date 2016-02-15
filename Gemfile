@@ -30,7 +30,8 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 # Generates dummy data
 gem 'faker', '~> 1.6', '>= 1.6.1'
-
+gem 'populator', '~> 1.0'
+# Manager files
 gem 'paperclip'
 
 # Use ActiveModel has_secure_password
