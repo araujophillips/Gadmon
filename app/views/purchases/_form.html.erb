@@ -73,7 +73,9 @@
                 <th>#</th>
                 <th>Nombre</th>
                 <th>Precio</th>
-                <th></th>
+                <% if action == "new" || action == "edit" %>
+                    <th></th>
+                <% end %>
               </tr>
             </thead>
             <tbody id="purchase_detail">
