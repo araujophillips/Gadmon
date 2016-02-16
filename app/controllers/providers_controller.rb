@@ -28,6 +28,7 @@ class ProvidersController < ApplicationController
 
 	# GET /providers/show
 	def show
+		@purchases = Purchase.by_provider_id(params[:id])
 	end
 
 	# POST /providers

@@ -9,4 +9,8 @@ class Purchase < ActiveRecord::Base
 	def self.search(query)
 	  	where('purchases.id = ? OR purchases.invoice = ?', query, query)
 	end
+
+	def self.by_provider_id(id)
+		where('provider_id = ?', id)
+	end
 end
