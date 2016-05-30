@@ -1,22 +1,34 @@
 <%= render 'sidebar' %>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <%= bootstrap_flash %>
-  <h1 class="page-header">Clientes</h1>
+  <h2 class="page-header">Listado de clientes <span class="badge"><%= @customers_qty %></span></h2>
   <div class="row">
     <%= form_tag(customers_path, :method => "get", id: "customers-search-form", role: "search") do %>
-      <div class="col-lg-8">
-        <div class="input-group">
-          <span class="input-group-btn">
-            <%= button_tag(type: 'submit', class: "btn btn-default") do %>
-              Buscar
-            <% end %>
-          </span>
-          <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Ingrese el nombre, nombre de usuario, correo o telefono...' %>
+      <div class="col-lg-3">
+        <div class="input-group width-100">
+          <%= text_field_tag :search, params[:search], class: "form-control ", value: params[:search], placeholder: 'Buscar cliente...' %>
         </div><!-- /input-group -->
-      </div><!-- /.col-lg-8 -->
-      <div class="col-lg-4">
+      </div><!-- /.col-lg-3 -->
+      <div class="col-lg-2">
         <%= select_tag(:ordering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"], ['Correo A-Z', "4"], ['Correo Z-A', "5"], ['Usuario A-Z', "6"], ['Usuario Z-A', "7"] ], :selected => params[:ordering] ), {:class => 'form-control'})  %> 
-      </div><!-- /.col-lg-4 -->
+      </div><!-- /.col-lg-2 -->
+      <div class="col-lg-4"></div>
+      <div class="col-lg-2">
+        <div class="input-group width-100">
+           <%= link_to '<button type="button" class="btn g-btn width-100">Nuevo cliente</button>'.html_safe, new_customer_path() %>
+        </div><!-- /input-group -->
+      </div><!-- /.col-lg-3 -->
+      <div class="col-lg-1">
+        <div class="dropdown width-100">
+          <button class="btn g-g-btn dropdown-toggle width-100 type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            ...
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#">Importar</a></li>
+            <li><%= link_to 'Exportar', customers_download_path %></li>
+          </ul>
+        </div>
+      </div><!-- /.col-lg-1 -->
     <% end %>
   </div>
   <br>

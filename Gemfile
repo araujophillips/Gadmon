@@ -17,6 +17,11 @@ gem 'therubyracer', platforms: :ruby
 gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 
+# Exporter to excel
+gem 'rubyzip', '= 1.0.0'
+gem 'axlsx', '= 2.0.1'
+gem 'axlsx_rails'
+
 # Importing font awesome
 gem "font-awesome-rails"
 

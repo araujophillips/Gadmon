@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
   get 'product_statuses/list'
 
+  get 'customers/download', to: "customers#download"
+
   resources :customers do
     resources :shipping_addresses
   end

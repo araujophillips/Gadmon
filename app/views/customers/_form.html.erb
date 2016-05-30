@@ -25,7 +25,7 @@
                 <div class="col-lg-2">
                     <label class="col-padding"></label>
                     <!-- Send email button -->
-                    <% mail_content = capture do %> <button type="button" class="btn btn-default"><i class="fa fa-envelope"></i> Email</button> <% end %>
+                    <% mail_content = capture do %> <button type="button" class="btn g-btn">&nbsp;&nbsp;&nbsp;<i class="fa fa-envelope"></i>&nbsp;&nbsp;&nbsp;</button> <% end %>
                     <%= mail_to @customer.email, mail_content %>
                 </div><!-- /.col-lg-2 -->
             <% end %>
@@ -55,14 +55,10 @@
             <div class="col-lg-5">
                 <div class="actions">
                     <% if action == "show" %>
-                        <%= link_to '<button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Editar</button>'.html_safe, edit_customer_path(@customer) %>
+                        <%= link_to '<button type="button" class="btn g-btn">&nbsp;&nbsp;Editar&nbsp;&nbsp;</button>'.html_safe, edit_customer_path(@customer) %>
                     <% else  %>
-                        <% if action == "edit"  %>
-                            <%= link_to '<button type="button" class="btn btn-warning"><i class="fa fa-reply"></i> Volver</button>'.html_safe, customer_path(@customer) %>
-                            &nbsp;
-                         <% end %>
                         <%= button_tag(type: 'submit', class: "btn btn-success") do %>
-                            <i class="fa fa-floppy-o"></i> Guardar
+                            &nbsp;&nbsp;Guardar&nbsp;&nbsp;
                         <% end %>
                     <% end %>
                 </div>

@@ -1,6 +1,6 @@
 <div class="col-sm-3 col-md-2 sidebar">
     <ul class="nav nav-sidebar">
-        <li><%= link_to 'Clientes', customers_path %></li>
-        <li><%= link_to 'Registrar cliente', new_customer_path %></li>
+        <li <%= current_page?(:controller => 'customers', :action => 'index') ? 'class=active' : '' %>><%= link_to 'Listado de clientes', customers_path %></li>
+        <li <%= current_page?(:controller => 'customers', :action => 'new') ? 'class=active' : '' %>><%= link_to 'Registrar cliente', new_customer_path %></li>
     </ul>
 </div>

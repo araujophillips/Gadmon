@@ -15,6 +15,7 @@ class CustomersController < ApplicationController
       scope = scope.order(ordering)
     end
     @customers = scope.all.order('id DESC')
+    @customers_qty = @customers.count
   end
 
   # GET /customers/1
@@ -65,6 +66,12 @@ class CustomersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to customers_url, notice: 'Cliente eliminado exitosamente.' }
     end
+  end
+
+  # METHOD TO DOWNLOAD VIA AXLSX GEM
+  def download
+      @customers = Customer.all
+      render xlsx: "customers.xlsx" 
   end
 
   private
