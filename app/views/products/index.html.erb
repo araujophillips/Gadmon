@@ -1,23 +1,35 @@
 <%= render 'sidebar' %>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <%= bootstrap_flash %>
-  <h1 class="page-header">Productos</h1>
+  <h2 class="page-header">Inventario de productos</h2>
   <div class="row">
     <%= form_tag(products_path, :method => "get", id: "products-search-form", role: "search") do %>
-      <div class="col-lg-8">
-        <div class="input-group">
-          <span class="input-group-btn">
-            <%= button_tag(type: 'submit', class: "btn btn-default") do %>
-              Buscar
-            <% end %>
-          </span>
-          <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search] %>
+      <div class="col-lg-3">
+        <div class="input-group width-100">
+          <%= text_field_tag :search, params[:search], class: "form-control width-100", value: params[:search], placeholder: "Buscar producto..." %>
         </div><!-- /input-group -->
-      </div><!-- /.col-lg-8 -->
-      <div class="col-lg-4">
-        <%= select_tag(:ordering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"] ], :selected => params[:ordering] ), {:class => 'form-control'})  %> 
-      </div><!-- /.col-lg-4 -->
+      </div><!-- /.col-lg-3 -->
+      <div class="col-lg-2">
+        <%= select_tag(:filtering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"], ['Con inventario ', "4"], ['Sin inventario', "5"] ], :selected => params[:filtering] ), {:class => 'form-control'})  %> 
+      </div><!-- /.col-lg-2 -->
     <% end %>
+    <div class="col-lg-4"></div>
+    <div class="col-lg-2">
+      <div class="input-group width-100">
+         <%= link_to '<button type="button" class="btn g-btn width-100">Nuevo producto</button>'.html_safe, new_product_path() %>
+      </div><!-- /input-group -->
+    </div><!-- /.col-lg-2 -->
+    <div class="col-lg-1">
+      <div class="dropdown width-100">
+        <button class="btn g-g-btn dropdown-toggle width-100 type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          ...
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Importar</a></li>
+          <li><a href="#">Exportar</a></li>
+        </ul>
+      </div>
+    </div><!-- /.col-lg-1 -->
   </div>
   <br>
   <table class="table table-hover">
@@ -34,8 +46,8 @@
     <tbody>
       <% @products.each do |product| %>
         <tr <%= product.count == 0 && product.published == true ? 'class="danger" data-toggle="tooltip" data-placement="top" title="¡Este producto no tiene inventario disponible y esta publicado!"'.html_safe : '' %>>
-          <td><%= product.id %></td>
-          <td><%= link_to product.name, product %></td>
+          <td><%= link_to product.id, product %></td>
+          <td><%= product.name %></td>
           <td class="text-center"><%= product.count %></td>
           <td><%= number_to_currency(product.current_price.price, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
           <td class="text-center"><%= product.published == true ? '<i class="fa fa-check g-success"></i>'.html_safe : '<i class="fa fa-times g-danger"></i>'.html_safe %></td>

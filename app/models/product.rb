@@ -29,10 +29,10 @@ class Product < ActiveRecord::Base
     end
 
     # Returns a count with the available products on stock
-    def self.only_with_stock()
+    def self.only_with_stock(available)
         select('products.*, product_details.serial as serial')
         .joins(:product_details => :product_status)
-        .where(:product_statuses => { :available => true })
+        .where(:product_statuses => { :available => available })
         .group('products.id')
     end
 

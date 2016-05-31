@@ -1,8 +1,8 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
 
-  # Params for ordering dropdown
-  ORDERS = [ "id DESC", "id ASC", "name ASC", "name DESC" ]
+  # Params for filtering dropdown
+  FILTER = [ "id DESC", "id ASC", "name ASC", "name DESC", true, false ]
 
   # GET /products
   # GET /products.json
@@ -11,8 +11,11 @@ class ProductsController < ApplicationController
     if params[:search]
       scope = scope.search(params[:search])
     end
-    if params[:ordering] && ordering = ORDERS[params[:ordering].to_i]
-      scope = scope.order(ordering)
+    if params[:filtering].to_i == 4 || params[:filtering].to_i == 5
+      filter = FILTER[params[:filtering].to_i]
+      scope = scope.only_with_stock(filter)
+    elsif params[:filtering] && filtering = FILTER[params[:filtering].to_i]
+      scope = scope.order(filtering)
     end
     @products = scope.includes(:current_price).all.stock.order('id DESC')
   end
