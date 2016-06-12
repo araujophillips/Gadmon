@@ -39,14 +39,10 @@
             <div class="col-lg-5">
                 <div class="actions">
                     <% if action == "show" %>
-                        <%= link_to '<button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Editar</button>'.html_safe, edit_product_path(@product) %>
+                        <%= link_to '<button type="button" class="btn g-btn">&nbsp;&nbsp;Editar&nbsp;&nbsp;</button>'.html_safe, edit_product_path(@product) %>
                     <% else  %>
-                        <% if action == "edit"  %>
-                            <%= link_to '<button type="button" class="btn btn-warning"><i class="fa fa-reply"></i> Volver</button>'.html_safe, product_path(@product) %>
-                            &nbsp;
-                         <% end %>
                         <%= button_tag(type: 'submit', class: "btn btn-success") do %>
-                            <i class="fa fa-floppy-o"></i> Guardar
+                            &nbsp;&nbsp;Guardar&nbsp;&nbsp;
                         <% end %>
                     <% end %>
                 </div>

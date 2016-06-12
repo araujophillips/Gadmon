@@ -1,6 +1,6 @@
 <div class="col-sm-3 col-md-2 sidebar">
     <ul class="nav nav-sidebar">
-        <li  <%= current_page?(:controller => 'providers', :action => 'index') ? 'class=active' : '' %>><%= link_to 'Proveedores', providers_path %></li>
+        <li  <%= current_page?(:controller => 'providers', :action => 'index') ? 'class=active' : '' %>><%= link_to 'Listado de proveedores', providers_path %></li>
         <li  <%= current_page?(:controller => 'providers', :action => 'new') ? 'class=active' : '' %>><%= link_to 'Registrar proveedor', new_provider_path %></li>
     </ul>
 </div>

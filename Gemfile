@@ -22,6 +22,10 @@ gem 'rubyzip', '= 1.0.0'
 gem 'axlsx', '= 2.0.1'
 gem 'axlsx_rails'
 
+# Pagination
+gem 'will_paginate'
+gem 'will_paginate-bootstrap'
+
 # Importing font awesome
 gem "font-awesome-rails"
 

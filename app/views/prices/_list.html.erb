@@ -1,6 +1,6 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <h1 class="page-header">Historial de precios</h1>
-	<%= link_to '<button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>'.html_safe, new_product_price_path(@product) %>
+	<%= link_to '<button type="button" class="btn btn-success">&nbsp;&nbsp;&nbsp;<i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;</button>'.html_safe, new_product_price_path(@product) %>
 	<br><br>
 	<% if !@product.prices.empty? %>
 		<div class="row">
@@ -16,7 +16,7 @@
 			      </tr>
 			    </thead>
 			    <tbody>
-			      <% @product.prices.each do |price| %>
+			      <% @prices.each do |price| %>
 			        <tr>
 			        	<th class="col-lg-1"></th>
 			          <td class="col-lg-1"><%= number_to_currency(price.price, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
@@ -27,6 +27,9 @@
 			      <% end %>
 			    </tbody>
 			  </table>
+			  <div class="text-center">
+			    <%= will_paginate @prices, :param_name => 'prices_page', renderer: BootstrapPagination::Rails %>  
+			  </div>
 			</div>
 		</div>
 	<% else %>

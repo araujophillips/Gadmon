@@ -1,23 +1,37 @@
 <%= render 'sidebar' %>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <%= bootstrap_flash %>
-  <h1 class="page-header">Proveedores</h1>
+  <h2 class="page-header">Listado de proveedores <span class="badge"><%= @providers_qty %></span></h2>
   <div class="row">
     <%= form_tag(providers_path, :method => "get", id: "providers-search-form", role: "search") do %>
-      <div class="col-lg-8">
-        <div class="input-group">
-          <span class="input-group-btn">
-            <%= button_tag(type: 'submit', class: "btn btn-default") do %>
-              Buscar
-            <% end %>
-          </span>
-          <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Ingrese el nombre, correo o telefono...' %>
+      <div class="col-lg-3">
+        <div class="input-group width-100">
+          <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Buscar proveedor...' %>
         </div><!-- /input-group -->
-      </div><!-- /.col-lg-8 -->
-      <div class="col-lg-4">
-        <%= select_tag(:ordering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"], ['Correo A-Z', "4"], ['Correo Z-A', "5"] ], :selected => params[:ordering] ), {:class => 'form-control'})  %> 
-      </div><!-- /.col-lg-4 -->
+      </div><!-- /.col-lg-3 -->
+      <div class="col-lg-2">
+        <%= select_tag(:ordering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"] ], :selected => params[:ordering] ), {:class => 'form-control'})  %> 
+      </div><!-- /.col-lg-2 -->
+      <div class="col-lg-1">
+        <%= select_tag(:per_page, options_for_select([ ['20', "20"], ['50', "50"], ['75', "75"], ['100', "100"], ['150', "150"], ['200', "200"] ], :selected => params[:per_page] ), {:class => 'form-control'})  %> 
+      </div><!-- /.col-lg-1 -->
     <% end %>
+    <div class="col-lg-3"></div>
+    <div class="col-lg-2">
+      <div class="input-group width-100">
+         <%= link_to '<button type="button" class="btn g-btn width-100">Nuevo proveedor</button>'.html_safe, new_provider_path() %>
+      </div><!-- /input-group -->
+    </div><!-- /.col-lg-2 -->
+    <div class="col-lg-1">
+      <div class="dropdown width-100">
+        <button class="btn g-g-btn dropdown-toggle width-100 type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          ...
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><%= link_to 'Exportar', providers_download_path %></li>
+        </ul>
+      </div>
+    </div><!-- /.col-lg-1 -->
   </div> 
   <br>
   <table class="table table-hover">
@@ -29,21 +43,17 @@
         <th class="text-center">RIF</th>
         <th>Correo electrónico</th>
         <th>Telefono</th>
-        <th class="text-center">Dirección</th>
-        <th class="text-center">Comentario</th>
       </tr>
     </thead>
     <tbody>
       <% @providers.each do |provider| %>
         <tr>
-          <td><%= provider.id %></td>
-          <td><%= link_to provider.name, provider %></td>
+          <td><%= link_to provider.id, provider %></td>
+          <td><%= provider.name %></td>
           <td class="text-center"><%= provider.provider_type.name %></td>
           <td class="text-center"><%= provider.rif.present? ? provider.rif : "-" %></td>
           <td><%= provider.email %></td>
           <td><%= number_to_phone(provider.phone, delimiter: " ") %></td>
-          <td class="text-center"><%= provider.address.present? ? provider.address : "-" %></td>
-          <td class="text-center"><%= provider.comment.present? ? provider.comment : "-" %></td>
           <td class="text-center">
             <div class="btn-group">
               <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -60,4 +70,7 @@
       <% end %>
     </tbody>
   </table>
+  <div class="text-center">
+      <%= will_paginate @providers, :param_name => 'page', renderer: BootstrapPagination::Rails %>  
+  </div>
 </div>

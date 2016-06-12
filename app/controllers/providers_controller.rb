@@ -3,11 +3,11 @@ class ProvidersController < ApplicationController
 	before_action :set_provider_types, only: [:show, :edit, :new]
 
 	# Params for ordering dropdown
-	ORDERS = [ "id DESC", "id ASC", "name ASC", "name DESC", "email ASC", "email DESC" ]
+	ORDERS = [ "id DESC", "id ASC", "name ASC", "name DESC", "type_id ASC" ]
 
 	# GET /providers
 	def index
-		scope = Provider
+		scope = Provider.paginate(page: params[:page], per_page: params[:per_page])
 	    if params[:search].present?
 	      scope = scope.search(params[:search])
 	    end
@@ -15,6 +15,7 @@ class ProvidersController < ApplicationController
 	      scope = scope.order(ordering)
 	    end
 		@providers = scope.all.order('id DESC')
+		@providers_qty = @providers.count
 	end
 
 	# GET /providers/new
@@ -28,7 +29,7 @@ class ProvidersController < ApplicationController
 
 	# GET /providers/show
 	def show
-		@purchases = Purchase.by_provider_id(params[:id])
+		@purchases = Purchase.paginate(page: params[:page], per_page: 5).by_provider_id(params[:id])
 	end
 
 	# POST /providers
@@ -63,6 +64,12 @@ class ProvidersController < ApplicationController
 		  format.html { redirect_to providers_url, notice: 'Proveedor eliminado exitosamente.' }
 		end
 	end
+
+	  # METHOD TO DOWNLOAD VIA AXLSX GEM
+	  def download
+	      @providers = Provider.all
+	      render xlsx: "providers.xlsx" 
+	  end
 
 	private
 	    def set_provider

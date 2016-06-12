@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Purchases") do |sheet|
+	sheet.add_row ["#", "Proveedor", "Subtotal", "IVA", "Total", "Factura", "Fecha"]
+  @purchases.each do |purchase|
+    sheet.add_row [purchase.id, purchase.provider.name, purchase.subtotal, purchase.tax, purchase.total, purchase.invoice, purchase.created_at]
+  end
+end

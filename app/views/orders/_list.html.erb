@@ -5,24 +5,38 @@
     <% if action != 'show' %>
         <%= bootstrap_flash %>
     <% end %>
-    <h1 class="page-header">Ordenes</h1>
+    <h2 class="page-header">Ordenes <span class="badge"><%= @orders_qty %></span></h2>
     <% if action != 'show' %>
         <div class="row">
         <%= form_tag(orders_path, :method => "get", id: "customers-search-form", role: "search") do %>
-          <div class="col-lg-8">
-            <div class="input-group">
-              <span class="input-group-btn">
-                <%= button_tag(type: 'submit', class: "btn btn-default") do %>
-                  Buscar
-                <% end %>
-              </span>
-              <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Ingrese el numero de orden o factura...' %>
+          <div class="col-lg-3">
+            <div class="input-group width-100">
+              <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Buscar orden o factura...' %>
             </div><!-- /input-group -->
-          </div><!-- /.col-lg-8 -->
-          <div class="col-lg-4">
-            <%= select_tag(:ordering, options_for_select( [ ['Mas reciente', "0"], ['Mas antiguo', "1"] ], :selected => params[:ordering] ), { :class => 'form-control' } )  %> 
-          </div><!-- /.col-lg-4 -->
+            </div><!-- /.col-lg-3 -->
+            <div class="col-lg-2">
+            <%= select_tag(:ordering, options_for_select( [ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Mayor monto', "2"], ['Menor monto', "3"] ], :selected => params[:ordering] ), { :class => 'form-control' } )  %> 
+            </div><!-- /.col-lg-2 -->
+            <div class="col-lg-1">
+              <%= select_tag(:per_page, options_for_select([ ['20', "20"], ['50', "50"], ['75', "75"], ['100', "100"], ['150', "150"], ['200', "200"] ], :selected => params[:per_page] ), {:class => 'form-control'})  %> 
+            </div><!-- /.col-lg-1 -->
         <% end %>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-2">
+          <div class="input-group width-100">
+             <%= link_to '<button type="button" class="btn g-btn width-100">Nueva orden</button>'.html_safe, new_order_path() %>
+          </div><!-- /input-group -->
+        </div><!-- /.col-lg-2 -->
+        <div class="col-lg-1">
+          <div class="dropdown width-100">
+            <button class="btn g-g-btn dropdown-toggle width-100 type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              ...
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#">Exportar</a></li>
+            </ul>
+          </div>
+        </div><!-- /.col-lg-1 -->
         </div>
         <br>
     <% end %>
@@ -70,6 +84,9 @@
                 <% end %>
             </tbody>
         </table>
+        <div class="text-center">
+            <%= will_paginate @orders, :param_name => 'orders_page', renderer: BootstrapPagination::Rails %>  
+        </div>
     <% else %>
         <div class="alert alert-warning g-margin-b-0" role="alert">Este cliente aun no tiene ordenes...</div>
     <% end %>

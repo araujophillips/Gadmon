@@ -1,0 +1,7 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Providers") do |sheet|
+	sheet.add_row ["#", "Nombre", "Correo electrónico", "Tipo", "RIF", "Dirección", "Comentario"]
+  @providers.each do |provider|
+    sheet.add_row [provider.id, provider.name, provider.email, provider.provider_type.name, provider.rif, provider.address, provider.comment]
+  end
+end

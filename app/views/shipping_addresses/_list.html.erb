@@ -14,11 +14,11 @@
         </tr>
       </thead>
       <tbody>
-        <% @customer.shipping_addresses.each_with_index do |shipping_address,i| %>
+        <% @shipping_addresses.each_with_index do |shipping_address,i| %>
           <% i = i + 1 %>
           <tr>
-            <td><%= i %></td>
-            <td><%= link_to shipping_address.address, customer_shipping_address_path(@customer, shipping_address) %></td>
+            <td><%= link_to i, customer_shipping_address_path(@customer, shipping_address) %></td>
+            <td><%= shipping_address.address %></td>
             <td><%= shipping_address.state %></td>
             <td><%= shipping_address.city %></td>
             <td>
@@ -44,6 +44,9 @@
         <% end %>
       </tbody>
     </table>
+    <div class="text-center">
+        <%= will_paginate @shipping_addresses, :param_name => 'addresses_page', renderer: BootstrapPagination::Rails %>  
+    </div>
   <% else %>
     <div class="alert alert-warning g-margin-b-0" role="alert">Este cliente aun no tiene direcciones...</div>
   <% end %>

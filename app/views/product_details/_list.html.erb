@@ -1,6 +1,6 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   	<h1 class="page-header">Inventario</h1>
-	<%= link_to '<button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>'.html_safe, new_product_product_detail_path(@product) %>
+	<%= link_to '<button type="button" class="btn btn-success">&nbsp;&nbsp;&nbsp;<i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;</button>'.html_safe, new_product_product_detail_path(@product) %>
 	<br><br>
 	<% if !@product.product_details.empty? %>
 		<div class="row">
@@ -17,11 +17,11 @@
 			      	</tr>
 			    </thead>
 			    <tbody>
-				    <% @product.product_details.each_with_index do |product_detail,i| %>
+				    <% @product_details.each_with_index do |product_detail,i| %>
 				    	<% i = i + 1 %>
 				        <tr <%= !product_detail.order_detail.nil? && product_detail.product_status.available == true ? 'class="danger" data-toggle="tooltip" data-placement="top" title="¡Esta unidad esta disponible y atada a una orden a la vez!"'.html_safe : '' %> <%= product_detail.order_detail.nil? && product_detail.product_status.id == 2 ? 'class="danger" data-toggle="tooltip" data-placement="top" title="¡Esta unidad esta vendida y no pertenece a una orden!"'.html_safe : '' %>>
-							<td><%= i %></td>
-							<td><%= link_to product_detail.serial, edit_product_product_detail_path(@product, product_detail) %></td>
+							<td><%= link_to i, edit_product_product_detail_path(@product, product_detail) %></td>
+							<td><%= product_detail.serial %></td>
 							<td class="text-center"><span class="label label-<%= product_detail.product_status.available == true ? 'success' : 'danger' %>"><%= product_detail.product_status.name %></span></td>
 							<td class="text-center">
 								<% if product_detail.order_detail.present? %> 
@@ -46,6 +46,9 @@
 				    <% end %>
 			    </tbody>
 			  </table>
+			  <div class="text-center">
+			    <%= will_paginate @product_details, :param_name => 'inventory_page', renderer: BootstrapPagination::Rails %>  
+			  </div>
 			</div>
 		</div>
 	<% else %>

@@ -7,7 +7,7 @@ class PurchasesController < ApplicationController
 	ORDERS = [ "id DESC", "id ASC", "total DESC", "total ASC" ]
 
 	def index
-	    scope = Purchase
+	    scope = Purchase.paginate(page: params[:page], per_page: params[:per_page])
 	    if params[:search].present?
 	      scope = scope.search(params[:search])
 	    end
@@ -15,6 +15,7 @@ class PurchasesController < ApplicationController
 	      scope = scope.order(ordering)
 	    end
 	    @purchases = scope.all.order('id DESC')
+	    @purchases_qty = @purchases.count
 	end
 
 	def show
@@ -57,6 +58,13 @@ class PurchasesController < ApplicationController
 		respond_to do |format|
 			format.html { redirect_to purchases_url, notice: 'Compra eliminada exitosamente.' }
 		end
+	end
+
+
+	# METHOD TO DOWNLOAD VIA AXLSX GEM
+	def download
+	    @purchases = Purchase.all
+	    render xlsx: "purchases.xlsx" 
 	end
 
 	private

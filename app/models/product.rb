@@ -20,6 +20,13 @@ class Product < ActiveRecord::Base
         where(["products.name LIKE ?", "%#{query}%"])
     end
 
+    def self.overview()
+        includes(:current_price)
+        .all
+        .stock
+        .order('id DESC')
+    end
+
     # Returns a count with the available products on stock
     def self.stock()
         select('products.*, SUM(case when product_statuses.available=true then 1 else 0 end) as count')
@@ -29,10 +36,10 @@ class Product < ActiveRecord::Base
     end
 
     # Returns a count with the available products on stock
-    def self.only_with_stock(available)
+    def self.only_with_stock()
         select('products.*, product_details.serial as serial')
         .joins(:product_details => :product_status)
-        .where(:product_statuses => { :available => available })
+        .where(:product_statuses => { :available => true })
         .group('products.id')
     end
 

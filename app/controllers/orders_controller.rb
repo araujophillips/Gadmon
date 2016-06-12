@@ -6,7 +6,7 @@ class OrdersController < ApplicationController
   before_action :set_order_status_details, only: [:edit, :show]
 
   # Params for ordering dropdown
-  ORDERS = [ "id DESC", "id ASC" ]
+  ORDERS = [ "id DESC", "id ASC", "total DESC", "total ASC" ]
 
   # GET /orders/update_quantity
   def update_quantity
@@ -20,7 +20,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    scope = Order
+    scope = Order.paginate(page: params[:orders_page], per_page: params[:per_page])
     if params[:search].present?
       scope = scope.search(params[:search])
     end
@@ -28,6 +28,7 @@ class OrdersController < ApplicationController
       scope = scope.order(ordering)
     end
     @orders = scope.with_current_status()
+    @orders_qty = @orders.to_a.count
   end
 
   # GET /orders/1

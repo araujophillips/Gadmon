@@ -7,7 +7,10 @@ class CustomersController < ApplicationController
   # GET /customers
   # GET /customers.json
   def index
-    scope = Customer
+    if params[:per_page].nil?
+      params[:per_page] = 20
+    end
+    scope = Customer.paginate(page: params[:page], per_page: params[:per_page])
     if params[:search].present?
       scope = scope.search(params[:search])
     end
@@ -21,8 +24,8 @@ class CustomersController < ApplicationController
   # GET /customers/1
   # GET /customers/1.json
   def show
-    @orders = Order.with_current_status().by_customer_id(params[:id])
-    @shippind_address = ShippingAddress.new
+    @orders = Order.paginate(page: params[:orders_page], per_page: 5).with_current_status().by_customer_id(params[:id])
+    @shipping_address = ShippingAddress.new
   end
 
   # GET /customers/new
@@ -77,6 +80,7 @@ class CustomersController < ApplicationController
   private
     def set_customer
       @customer = Customer.find(params[:id])
+      @shipping_addresses = @customer.shipping_addresses.paginate(page: params[:addresses_page], per_page: 5)
     end
 
     def customer_params

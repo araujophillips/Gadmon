@@ -11,7 +11,7 @@
                 </ul>
             </div>
         <% end %>
-        <h1 class="page-header"><%= name %><%= @purchase.id %></h1>
+        <h2 class="page-header"><%= name %><%= @purchase.id %></h2>
         <div class="row">
             <div class="col-lg-<%= action == "new" || action == "edit" ? 6 : 12 %>">
                 <% if action == "new" || action == "edit" %>
@@ -37,7 +37,7 @@
             <h1 class="page-header"><small>Detalles</small></h1>
             <div class="row">
                 <div class="col-lg-12">
-                    <button type="button" id="show-add-detail-form-btn" class="btn btn-success"><i class="fa fa-plus"></i> Agregar</button>
+                 <button type="button" id="show-add-detail-form-btn" class="btn btn-success">&nbsp;&nbsp;&nbsp;<i class="fa fa-plus"></i>&nbsp;&nbsp;&nbsp;</button>
                 </div>
                 <br> <!-- line break -->
             </div>
@@ -56,9 +56,9 @@
                     <br> <!-- line break -->
                     <div class="row">
                         <div class="col-lg-12">
-                            <button type="button" id="hide-add-detail-btn" class="btn btn-warning"><i class="fa fa-reply"></i> Ocultar</button>
+                            <button type="button" id="hide-add-detail-btn" class="btn btn-warning">&nbsp;&nbsp;Ocultar&nbsp;&nbsp;</button>
                             &nbsp;
-                            <button type="button" id="add-detail-btn" class="btn btn-success" onclick="add_row()"><i class="fa fa-plus"></i> Agregar</button>
+                            <button type="button" id="add-detail-btn" class="btn btn-success" onclick="add_row()">&nbsp;&nbsp;Agregar&nbsp;&nbsp;</button>
                         </div>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <% if action == "show" %>
-                    <%= link_to '<button type="button" class="btn btn-default width-100"><i class="fa fa-pencil"></i> Editar compra</button>'.html_safe, edit_purchase_path(@purchase) %>
+                    <%= link_to '<button type="button" class="btn g-btn width-100">Editar compra</button>'.html_safe, edit_purchase_path(@purchase) %>
                     <% if @purchase.invoice.present? %>
                         <br>
                         <a href="#" id="pop">  
@@ -147,11 +147,11 @@
                     <% end %>
                 <% elsif action == "new" %>
                     <%= button_tag(type: 'submit', id: "process_purchase" , class: "btn btn-success width-100 g-display-none") do %>
-                        <i class="fa fa-shopping-cart"></i> Procesar compra
+                        Procesar compra
                     <% end %>
                 <% elsif action == "edit" %>
                     <%= button_tag(type: 'submit', id: "update_purchase" , class: "btn btn-success width-100") do %>
-                        <i class="fa fa-floppy-o"></i> Actualizar compra
+                        Actualizar compra
                     <% end %>
                 <% end %>
             </div>

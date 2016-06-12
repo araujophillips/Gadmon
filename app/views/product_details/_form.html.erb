@@ -34,13 +34,11 @@
             <div class="col-lg-5">
                 <% if action == 'new' %>
                     <%= button_tag(type: 'submit', class: "btn btn-success") do %>
-                        <i class="fa fa-plus"></i> Agregar
+                        &nbsp;&nbsp;Agregar&nbsp;&nbsp;
                     <% end %> 
                 <% elsif action == 'edit'  %>
-                    <%= link_to '<button type="button" class="btn btn-warning"><i class="fa fa-reply"></i> Volver</button>'.html_safe, product_path(@product) %>
-                    &nbsp;
                     <%= button_tag(type: 'submit', class: "btn btn-success") do %>
-                        <i class="fa fa-floppy-o"></i> Guardar
+                        &nbsp;&nbsp;Guardar&nbsp;&nbsp;
                 <% end %>
                 <% end %>
             </div>

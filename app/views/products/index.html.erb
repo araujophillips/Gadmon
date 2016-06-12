@@ -1,7 +1,7 @@
 <%= render 'sidebar' %>
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
   <%= bootstrap_flash %>
-  <h2 class="page-header">Inventario de productos</h2>
+  <h2 class="page-header">Inventario de productos <span class="badge"><%= @products_qty %></span></h2>
   <div class="row">
     <%= form_tag(products_path, :method => "get", id: "products-search-form", role: "search") do %>
       <div class="col-lg-3">
@@ -10,10 +10,13 @@
         </div><!-- /input-group -->
       </div><!-- /.col-lg-3 -->
       <div class="col-lg-2">
-        <%= select_tag(:filtering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"], ['Con inventario ', "4"], ['Sin inventario', "5"] ], :selected => params[:filtering] ), {:class => 'form-control'})  %> 
+        <%= select_tag(:filtering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Nombre A-Z', "2"], ['Nombre Z-A', "3"] ], :selected => params[:filtering] ), {:class => 'form-control'})  %> 
+      </div><!-- /.col-lg-2 -->
+      <div class="col-lg-1">
+        <%= select_tag(:per_page, options_for_select([ ['20', "20"], ['50', "50"], ['75', "75"], ['100', "100"], ['150', "150"], ['200', "200"] ], :selected => params[:per_page] ), {:class => 'form-control'})  %> 
       </div><!-- /.col-lg-2 -->
     <% end %>
-    <div class="col-lg-4"></div>
+    <div class="col-lg-3"></div>
     <div class="col-lg-2">
       <div class="input-group width-100">
          <%= link_to '<button type="button" class="btn g-btn width-100">Nuevo producto</button>'.html_safe, new_product_path() %>
@@ -25,8 +28,7 @@
           ...
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-          <li><a href="#">Importar</a></li>
-          <li><a href="#">Exportar</a></li>
+          <li><%= link_to 'Exportar', products_download_path %></li>
         </ul>
       </div>
     </div><!-- /.col-lg-1 -->
@@ -67,6 +69,9 @@
       <% end %>
     </tbody>
   </table>
+  <div class="text-center">
+    <%= will_paginate @customers, renderer: BootstrapPagination::Rails %>  
+  </div>
 </div>
 
 <script>

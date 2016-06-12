@@ -5,63 +5,82 @@
   <% if action != 'show' %>
       <%= bootstrap_flash %>
   <% end %>
-  <h1 class="page-header">Compras</h1>
+  <h2 class="page-header">Compras <span class="badge"><%= @purchases_qty %></span></h2>
   <% if action != 'show' %>
     <div class="row">
       <%= form_tag(purchases_path, :method => "get", id: "purchases-search-form", role: "search") do %>
-        <div class="col-lg-8">
-          <div class="input-group">
-            <span class="input-group-btn">
-              <%= button_tag(type: 'submit', class: "btn btn-default") do %>
-                Buscar
-              <% end %>
-            </span>
-            <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Ingrese el numero de compra o factura...' %>
+        <div class="col-lg-3">
+          <div class="input-group width-100">
+            <%= text_field_tag :search, params[:search], class: "form-control", value: params[:search], placeholder: 'Buscar compra...' %>
           </div><!-- /input-group -->
-        </div><!-- /.col-lg-8 -->
-        <div class="col-lg-4">
+        </div><!-- /.col-lg-3 -->
+        <div class="col-lg-2">
           <%= select_tag(:ordering, options_for_select([ ['Mas reciente', "0"], ['Mas antiguo', "1"], ['Mayor monto', "2"], ['Menor monto', "3"] ], :selected => params[:ordering] ), {:class => 'form-control'})  %> 
-        </div><!-- /.col-lg-4 -->
+        </div><!-- /.col-lg-2 -->
+        <div class="col-lg-1">
+          <%= select_tag(:per_page, options_for_select([ ['20', "20"], ['50', "50"], ['75', "75"], ['100', "100"], ['150', "150"], ['200', "200"] ], :selected => params[:per_page] ), {:class => 'form-control'})  %> 
+        </div><!-- /.col-lg-1 -->
       <% end %>
+      <div class="col-lg-3"></div>
+      <div class="col-lg-2">
+        <div class="input-group width-100">
+           <%= link_to '<button type="button" class="btn g-btn width-100">Nueva compra</button>'.html_safe, new_purchase_path() %>
+        </div><!-- /input-group -->
+      </div><!-- /.col-lg-2 -->
+      <div class="col-lg-1">
+        <div class="dropdown width-100">
+          <button class="btn g-g-btn dropdown-toggle width-100 type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            ...
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><%= link_to 'Exportar', purchases_download_path %></li>
+          </ul>
+        </div>
+      </div><!-- /.col-lg-1 -->
     </div>
     <br>
   <% end %>
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Proveedor</th>
-        <th>Subtotal</th>
-        <th>IVA</th>
-        <th>Total</th>
-        <th class="text-center">Factura</th>
-        <th class="text-center">Comentario</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @purchases.each do |purchase| %>
+  <% if !@purchases.empty? %>
+    <table class="table table-hover">
+      <thead>
         <tr>
-          <td><%= link_to purchase.id, purchase %></td>
-          <td><%= link_to purchase.provider.name, purchase.provider %></td>
-          <td><%= number_to_currency(purchase.subtotal, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
-          <td><%= number_to_currency(purchase.tax, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
-          <td><%= number_to_currency(purchase.total, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
-          <td class="text-center"><%= purchase.invoice %></td>
-          <td class="text-center"><%= purchase.comment.present? ? purchase.comment : "-" %></td>
-          <td class="text-center">
-            <div class="btn-group">
-              <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-gear"></i> <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
-                <li><%= link_to 'Ver detalle', purchase %></li>
-                <li><%= link_to 'Editar', edit_purchase_path(purchase) %></li>
-                <li><%= link_to 'Eliminar', purchase, method: :delete, data: { confirm: '¿Seguro que deseas eliminar la compra #' + purchase.id.to_s + '?' } %></li>
-              </ul>
-            </div>
-          </td>
+          <th>#</th>
+          <th>Proveedor</th>
+          <th>Subtotal</th>
+          <th>IVA</th>
+          <th>Total</th>
+          <th class="text-center">Factura</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @purchases.each do |purchase| %>
+          <tr>
+            <td><%= link_to purchase.id, purchase %></td>
+            <td><%= link_to purchase.provider.name, purchase.provider %></td>
+            <td><%= number_to_currency(purchase.subtotal, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+            <td><%= number_to_currency(purchase.tax, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+            <td><%= number_to_currency(purchase.total, unit: "Bs. ", separator: ",", delimiter: ".") %></td>
+            <td class="text-center"><%= purchase.invoice.present? ? purchase.invoice : '-' %></td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                  <i class="fa fa-gear"></i> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><%= link_to 'Ver detalle', purchase %></li>
+                  <li><%= link_to 'Editar', edit_purchase_path(purchase) %></li>
+                  <li><%= link_to 'Eliminar', purchase, method: :delete, data: { confirm: '¿Seguro que deseas eliminar la compra #' + purchase.id.to_s + '?' } %></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="text-center">
+      <%= will_paginate @purchases, :param_name => 'page', renderer: BootstrapPagination::Rails %>  
+    </div>
+  <% else %>
+      <div class="alert alert-warning g-margin-b-0" role="alert">Este proveedor no tiene compras registradas...</div>
+  <% end %>
 </div>
